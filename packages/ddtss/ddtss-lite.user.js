@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name DDTSS Helper
-// @description Add stuff do DDTSS pages
-// @version 0.1
+// @description Add stuff to DDTSS pages
+// @version 0.2
 // @match https://ddtp.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
@@ -20,9 +20,10 @@ if (short_el[0]) {
   short_el[0].oninput();
 }
 
-// Add link to reflow the long description
+// Add button to reflow the long description
 var long_el = document.getElementsByName('long');
 if (long_el[0]) {
+  // remove newlines that don't mark the end of a paragraph
   var re = /([^.])\n([^ .])/gm;
   var button = document.createElement('button');
   var text = document.createTextNode('Join');
@@ -37,10 +38,7 @@ if (long_el[0]) {
 // Add link to p.d.o
 var ul_el = document.getElementsByTagName('ul');
 if (ul_el[0]) {
-  var matches = /forreview\/(.+)\?/.exec(document.URL);
-  if (matches == null) {
-    var matches = /translate\/(.+)/.exec(document.URL);
-  }
+  var matches = /(?:forreview|translate)\/([^?]+)/.exec(document.URL);
   var package_name = matches[1];
   var li_el = document.createElement('li');
   var a_el = document.createElement('a');
