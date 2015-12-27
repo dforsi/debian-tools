@@ -1,0 +1,9 @@
+The DDTS Satellite or Debian Distributed Translation Server Satellite
+(DDTSS) is a web interface for the Debian Description Translation Project
+(DDTP).
+
+Its home page is at http://ddtp.debian.net/ddtss/index.cgi/xx
+
+This directory contains:
+ * ddtss-lite.user.js - a Greasemonkey user script that adds some
+   functionalities to the DDTSS pages
