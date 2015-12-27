@@ -46,7 +46,7 @@ if (ul_el[0]) {
   var el = ul_el[0].children[1].children[0];
   var html = el.innerHTML;
   var re = /([^.]+.: )([^ ,]+)(.*)/;
-  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/sid/$2" target="_blank">$2</a>$3');
+  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/sid/$2" target="_blank">$2</a> <a href="https://ddtp.debian.net/ddt.cgi?package=$2" target="_blank">ddtp</a>$3');
 }
 
 // Fix one warning about mixed content
