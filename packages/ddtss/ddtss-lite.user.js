@@ -6,7 +6,7 @@
 // @match https://ddtp.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
 // ==/UserScript==
-// Daniele Forsi 19/12/2015
+// Daniele Forsi 27/12/2015
 // Creative Commons Zero
 
 // Add description length
