@@ -24,29 +24,29 @@ if (short_el[0]) {
 var long_el = document.getElementsByName('long');
 if (long_el[0]) {
   // remove newlines that don't mark the end of a paragraph
-  var re = /([^.])\n([^ .])/gm;
+  var long_re = /([^.])\n([^ .])/gm;
   var button = document.createElement('button');
   var text = document.createTextNode('Join');
   button.appendChild(text)
   button.onclick = function () {
-    long_el[0].value = long_el[0].value.replace(re, '$1 $2');
+    long_el[0].value = long_el[0].value.replace(long_re, '$1 $2');
     return false;
   }
   long_el[0].parentNode.insertBefore(button, long_el.nextSibling);
 }
 
-// Add link to p.d.o
+// Add links to p.d.o
 var ul_el = document.getElementsByTagName('ul');
 if (ul_el[0]) {
-  var matches = /(?:forreview|translate)\/([^?]+)/.exec(document.URL);
-  var package_name = matches[1];
-  var li_el = document.createElement('li');
-  var a_el = document.createElement('a');
-  a_el.href = 'https://packages.debian.org/en/sid/' + package_name;
-  a_el.innerHTML = package_name;
-  a_el.target = '_blank';
-  li_el.appendChild(a_el);
-  ul_el[0].appendChild(li_el);
+  var el = ul_el[0].children[0].children[0];
+  var html = el.innerHTML;
+  var re = /([^.]+.: )([^ ,]+)(.*)/;
+  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/source/sid/$2" target="_blank">$2</a>$3');
+
+  var el = ul_el[0].children[1].children[0];
+  var html = el.innerHTML;
+  var re = /([^.]+.: )([^ ,]+)(.*)/;
+  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/sid/$2" target="_blank">$2</a>$3');
 }
 
 // Fix one warning about mixed content
