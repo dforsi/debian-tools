@@ -48,3 +48,9 @@ if (ul_el[0]) {
   li_el.appendChild(a_el);
   ul_el[0].appendChild(li_el);
 }
+
+// Fix one warning about mixed content
+var iframe = document.getElementsByTagName('iframe');
+if (iframe[0]) {
+  iframe[0].src = iframe[0].src.replace("http:", "")
+}
