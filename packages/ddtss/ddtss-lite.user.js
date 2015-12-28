@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name DDTSS Helper
 // @description Add stuff to DDTSS pages
-// @version 0.2
+// @version 0.3
 // @match https://ddtp.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
 // ==/UserScript==
-// Daniele Forsi 27/12/2015
+// Daniele Forsi 28/12/2015
 // Creative Commons Zero
 
 // Add description length
@@ -41,7 +41,7 @@ if (ul_el[0]) {
   var el = ul_el[0].children[0].children[0];
   var html = el.innerHTML;
   var re = /([^.]+.: )([^ ,]+)(.*)/;
-  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/source/sid/$2" target="_blank">$2</a>$3');
+  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/source/sid/$2" target="_blank">$2</a> <a href="https://ddtp.debian.net/ddt.cgi?source=$2" target="_blank">ddtp</a>$3');
 
   var el = ul_el[0].children[1].children[0];
   var html = el.innerHTML;
