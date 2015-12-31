@@ -22,6 +22,7 @@ datafile_fmt = 'Translation-{0}'
 
 def usage():
     print('Usage: {0} COMMAND ARGUMENT(S)'.format(sys.argv[0]))
+    print('  --compare LANGUAGE1 LANGUAGE2  compares LANGUAGE1 and LANGUAGE2')
     print('  --summary LANGUAGE1 LANGUAGE2  prints differences between LANGUAGE1 and LANGUAGE2')
     print('  --update LANGUAGE      updates the database with the given LANGUAGE')
 
@@ -42,6 +43,22 @@ def opt_update(language):
     cursor.close()
 
     conn.commit()
+    conn.close()
+
+def opt_compare(language1, language2):
+    database1 = database_fmt.format(language1)
+    database2 = database_fmt.format(language2)
+
+    conn = sqlite3.connect(database1)
+    cursor = conn.cursor()
+    cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
+
+    cursor.execute("SELECT name FROM packages_{0} WHERE descmd5 NOT IN (SELECT descmd5 FROM packages_{1}) ORDER BY name".format(language2, language1))
+    print('in {0} not in {1}'.format(language2, language1))
+    for row in cursor:
+        print(row[0])
+
+    cursor.close()
     conn.close()
 
 def opt_summary(language1, language2):
@@ -83,7 +100,11 @@ def get_package(f):
         yield package
 
 def main():
-    if len(sys.argv) == 4 and sys.argv[1] == '--summary':
+    if len(sys.argv) == 4 and sys.argv[1] == '--compare':
+        language1 = sys.argv[2]
+        language2 = sys.argv[3]
+        opt_compare(language1, language2)
+    elif len(sys.argv) == 4 and sys.argv[1] == '--summary':
         language1 = sys.argv[2]
         language2 = sys.argv[3]
         opt_summary(language1, language2)
