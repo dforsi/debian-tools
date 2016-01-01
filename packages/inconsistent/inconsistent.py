@@ -36,8 +36,10 @@ def opt_update(language):
     cursor.execute("CREATE TABLE IF NOT EXISTS packages_{0} (name STRING, paragraphs INTEGER, descmd5 STRING)".format(language))
 
     with open(datafile) as f:
+        description ='Description-{0}'.format(language)
         for package in get_package(f):
-            cursor.execute("INSERT INTO packages_{0} (name, descmd5) VALUES (?, ?)".format(language), (package['Package'], package['Description-md5']))
+            paragraphs = 1 + package[description].count('\n.\n')
+            cursor.execute("INSERT INTO packages_{0} (name, paragraphs, descmd5) VALUES (?, ?, ?)".format(language), (package['Package'], paragraphs, package['Description-md5']))
 
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_packages_{0} ON packages_{0} (descmd5)".format(language))
     cursor.close()
@@ -57,6 +59,13 @@ def opt_compare(language1, language2):
     print('in {0} not in {1}'.format(language2, language1))
     for row in cursor:
         print(row[0])
+
+    print()
+
+    cursor.execute("SELECT t1.name, t1.paragraphs, t2.paragraphs FROM packages_{0} AS t1 INNER JOIN packages_{1} AS t2 ON t1.descmd5 = t2.descmd5 WHERE t1.paragraphs <> t2.paragraphs ORDER BY t1.name".format(language1, language2))
+    print('paragraphs diff {}-{}'.format(language1, language2))
+    for row in cursor:
+        print("{:>3} {}".format(row[1] - row[2], row[0]))
 
     cursor.close()
     conn.close()
