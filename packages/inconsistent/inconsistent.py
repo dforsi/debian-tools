@@ -92,21 +92,20 @@ def opt_compare(language1, language2):
     cursor.close()
     conn.close()
 
-def suggest_string(cursor, field, package, language):
+def suggest_string(cursor, field, package, language1, language2):
     cursor.execute("""
-SELECT (SELECT title FROM title_{0} WHERE id = p1.{1}) AS {1}, Count(*) AS count, group_concat(p1.name, ' ') AS packages FROM packages_{0} AS p1
-INNER JOIN (
- SELECT DISTINCT {1}
+SELECT Count(*), title, group_concat(name, ' ') AS packages FROM packages_{1}
+ INNER JOIN title_{1} ON title_{1}.id = {2}
+ WHERE descmd5 IN (
+ SELECT descmd5
   FROM packages_{0}
   WHERE name LIKE ?
-) AS p2
-ON p1.{1} = p2.{1}
-GROUP BY p1.{1}
-ORDER BY count DESC, {1}, packages
-""".format(language, field), (package, ))
+ )
+ GROUP BY title
+""".format(language1, language2, field), (package, ))
     for row in cursor:
-        # print(row)
-        print("{0:>5} {1}".format(row[1], row[0]))
+        print(row)
+        #print("{0:>5} {1}".format(row[1], row[0]))
 
 def opt_suggest_short(package, language1, language2):
     database1 = database_fmt.format(language1)
@@ -116,9 +115,9 @@ def opt_suggest_short(package, language1, language2):
     cursor = conn.cursor()
     cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
 
-    suggest_string(cursor, 'title_id', package, language1)
+    suggest_string(cursor, 'title_id', package, language1, language2)
     print()
-    suggest_string(cursor, 'trailer_id', package, language1)
+    suggest_string(cursor, 'trailer_id', package, language1, language2)
 
     cursor.close()
     conn.close()
