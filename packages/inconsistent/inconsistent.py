@@ -16,6 +16,7 @@
 
 import sys
 import sqlite3
+import re
 
 database_fmt = 'inconsistent-{0}.sqlite3'
 datafile_fmt = 'Translation-{0}'
@@ -23,8 +24,17 @@ datafile_fmt = 'Translation-{0}'
 def usage():
     print('Usage: {0} COMMAND ARGUMENT(S)'.format(sys.argv[0]))
     print('  --compare LANGUAGE1 LANGUAGE2  compares LANGUAGE1 and LANGUAGE2')
+    print('  --suggest-short LANGUAGE PACKAGE  suggests a short description for PACKAGE in LANGUAGE')
     print('  --summary LANGUAGE1 LANGUAGE2  prints differences between LANGUAGE1 and LANGUAGE2')
     print('  --update LANGUAGE      updates the database with the given LANGUAGE')
+
+def add_title(cursor, language, title):
+    try:
+        cursor.execute("INSERT INTO title_{0} (title) VALUES (?)".format(language), (title,))
+        return cursor.lastrowid
+    except sqlite3.IntegrityError:
+        cursor.execute("SELECT id FROM title_{0} WHERE title = ?".format(language), (title,))
+        return cursor.fetchone()[0]
 
 def opt_update(language):
     database = database_fmt.format(language)
@@ -33,13 +43,25 @@ def opt_update(language):
     conn = sqlite3.connect(database)
     cursor = conn.cursor()
 
-    cursor.execute("CREATE TABLE IF NOT EXISTS packages_{0} (name STRING, paragraphs INTEGER, descmd5 STRING)".format(language))
+    cursor.execute("CREATE TABLE IF NOT EXISTS packages_{0} (name STRING, paragraphs INTEGER, descmd5 STRING, title_id INTEGER, trailer_id INTEGER)".format(language))
+    cursor.execute("CREATE TABLE IF NOT EXISTS title_{0} (id INTEGER PRIMARY KEY, title STRING)".format(language))
+    cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_title_{0} ON title_{0} (title)".format(language))
 
     with open(datafile) as f:
         description ='Description-{0}'.format(language)
         for package in get_package(f):
+            title = package[description].split('\n')[0]
+            parts = re.split("^(.+?) \(([^(]+)\)$|^(.+?) \[([^]]+)\]$|^(.+?)[:;] ([^[(].*)$|^(.+?) --? (.+?)$", title)
+            parts = [x for x in parts if x]
+            if len(parts) == 2:
+                #print(parts[0], parts[1])
+                trailer_id = add_title(cursor, language, parts[1])
+            else:
+                #print(parts[0])
+                trailer_id = None
+            title_id = add_title(cursor, language, parts[0])
             paragraphs = 1 + package[description].count('\n.\n')
-            cursor.execute("INSERT INTO packages_{0} (name, paragraphs, descmd5) VALUES (?, ?, ?)".format(language), (package['Package'], paragraphs, package['Description-md5']))
+            cursor.execute("INSERT INTO packages_{0} (name, paragraphs, descmd5, title_id, trailer_id) VALUES (?, ?, ?, ?, ?)".format(language), (package['Package'], paragraphs, package['Description-md5'], title_id, trailer_id))
 
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_packages_{0} ON packages_{0} (descmd5)".format(language))
     cursor.close()
@@ -66,6 +88,37 @@ def opt_compare(language1, language2):
     print('paragraphs diff {}-{}'.format(language1, language2))
     for row in cursor:
         print("{:>3} {}".format(row[1] - row[2], row[0]))
+
+    cursor.close()
+    conn.close()
+
+def suggest_string(cursor, field, package, language):
+    cursor.execute("""
+SELECT (SELECT title FROM title_{0} WHERE id = p1.{1}) AS {1}, Count(*) AS count, group_concat(p1.name, ' ') AS packages FROM packages_{0} AS p1
+INNER JOIN (
+ SELECT DISTINCT {1}
+  FROM packages_{0}
+  WHERE name LIKE ?
+) AS p2
+ON p1.{1} = p2.{1}
+GROUP BY p1.{1}
+ORDER BY count DESC, {1}, packages
+""".format(language, field), (package, ))
+    for row in cursor:
+        # print(row)
+        print("{0:>5} {1}".format(row[1], row[0]))
+
+def opt_suggest_short(package, language1, language2):
+    database1 = database_fmt.format(language1)
+    database2 = database_fmt.format(language2)
+
+    conn = sqlite3.connect(database1)
+    cursor = conn.cursor()
+    cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
+
+    suggest_string(cursor, 'title_id', package, language1)
+    print()
+    suggest_string(cursor, 'trailer_id', package, language1)
 
     cursor.close()
     conn.close()
@@ -113,6 +166,11 @@ def main():
         language1 = sys.argv[2]
         language2 = sys.argv[3]
         opt_compare(language1, language2)
+    elif len(sys.argv) == 4 and sys.argv[1] == '--suggest-short':
+        language1 = 'en'
+        language2 = sys.argv[2]
+        package = sys.argv[3]
+        opt_suggest_short(package, language1, language2)
     elif len(sys.argv) == 4 and sys.argv[1] == '--summary':
         language1 = sys.argv[2]
         language2 = sys.argv[3]
