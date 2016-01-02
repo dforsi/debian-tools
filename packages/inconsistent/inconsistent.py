@@ -64,6 +64,10 @@ def opt_update(language):
             cursor.execute("INSERT INTO packages_{0} (name, paragraphs, descmd5, title_id, trailer_id) VALUES (?, ?, ?, ?, ?)".format(language), (package['Package'], paragraphs, package['Description-md5'], title_id, trailer_id))
 
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_packages_{0} ON packages_{0} (descmd5)".format(language))
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_title_id_{0} ON packages_{0} (title_id)".format(language))
+    cursor.execute("CREATE INDEX IF NOT EXISTS idx_trailer_id_{0} ON packages_{0} (trailer_id)".format(language))
+
+    cursor.execute("ANALYZE")
     cursor.close()
 
     conn.commit()
@@ -88,6 +92,32 @@ def opt_compare(language1, language2):
     print('paragraphs diff {}-{}'.format(language1, language2))
     for row in cursor:
         print("{:>3} {}".format(row[1] - row[2], row[0]))
+
+    print()
+
+    cursor.execute("""
+WITH candidates AS (
+ SELECT t1.name, t1.trailer_id AS trailer_id1, t2.trailer_id AS trailer_id2
+ FROM packages_{0} AS t1
+ INNER JOIN packages_{1} AS t2
+ ON t1.descmd5 = t2.descmd5
+ WHERE t1.trailer_id IS NOT NULL AND t2.trailer_id IS NOT NULL
+)
+SELECT
+ (SELECT title FROM title_{1} WHERE id = c1.trailer_id2) AS trailer1,
+ (SELECT title FROM title_{1} WHERE id = c2.trailer_id2) AS trailer2,
+ group_concat(DISTINCT c1.name) AS packages1,
+ group_concat(DISTINCT c2.name) AS packages2
+ FROM candidates AS c1
+ INNER JOIN candidates AS c2
+ ON c1.trailer_id1 = c2.trailer_id1
+ WHERE c1.trailer_id2 < c2.trailer_id2
+GROUP BY trailer1, trailer2
+ORDER BY trailer1, trailer2
+""".format(language1, language2))
+    print('inconsistent trailer,{},{}'.format(language1, language2))
+    for row in cursor:
+        print(row)
 
     cursor.close()
     conn.close()
