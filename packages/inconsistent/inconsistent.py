@@ -73,6 +73,28 @@ def opt_update(language):
     conn.commit()
     conn.close()
 
+def compare_string(cursor, field, language1, language2):
+    cursor.execute("""
+WITH candidates AS (
+ SELECT t1.name, t1.{2}_id AS {2}_id1, t2.{2}_id AS {2}_id2
+ FROM packages_{0} AS t1
+ INNER JOIN packages_{1} AS t2
+ ON t1.descmd5 = t2.descmd5
+ WHERE t1.{2}_id IS NOT NULL AND t2.{2}_id IS NOT NULL
+)
+SELECT
+ (SELECT title FROM title_{1} WHERE id = c1.{2}_id2) AS {2}1,
+ (SELECT title FROM title_{1} WHERE id = c2.{2}_id2) AS {2}2,
+ group_concat(DISTINCT c1.name) AS packages1,
+ group_concat(DISTINCT c2.name) AS packages2
+ FROM candidates AS c1
+ INNER JOIN candidates AS c2
+ ON c1.{2}_id1 = c2.{2}_id1
+ WHERE c1.{2}_id2 < c2.{2}_id2
+GROUP BY {2}1, {2}2
+ORDER BY {2}1, {2}2
+""".format(language1, language2, field))
+
 def opt_compare(language1, language2):
     database1 = database_fmt.format(language1)
     database2 = database_fmt.format(language2)
@@ -95,26 +117,14 @@ def opt_compare(language1, language2):
 
     print()
 
-    cursor.execute("""
-WITH candidates AS (
- SELECT t1.name, t1.trailer_id AS trailer_id1, t2.trailer_id AS trailer_id2
- FROM packages_{0} AS t1
- INNER JOIN packages_{1} AS t2
- ON t1.descmd5 = t2.descmd5
- WHERE t1.trailer_id IS NOT NULL AND t2.trailer_id IS NOT NULL
-)
-SELECT
- (SELECT title FROM title_{1} WHERE id = c1.trailer_id2) AS trailer1,
- (SELECT title FROM title_{1} WHERE id = c2.trailer_id2) AS trailer2,
- group_concat(DISTINCT c1.name) AS packages1,
- group_concat(DISTINCT c2.name) AS packages2
- FROM candidates AS c1
- INNER JOIN candidates AS c2
- ON c1.trailer_id1 = c2.trailer_id1
- WHERE c1.trailer_id2 < c2.trailer_id2
-GROUP BY trailer1, trailer2
-ORDER BY trailer1, trailer2
-""".format(language1, language2))
+    compare_string(cursor, 'title', language1, language2)
+    print('inconsistent title,{},{}'.format(language1, language2))
+    for row in cursor:
+        print(row)
+
+    print()
+
+    compare_string(cursor, 'trailer', language1, language2)
     print('inconsistent trailer,{},{}'.format(language1, language2))
     for row in cursor:
         print(row)
