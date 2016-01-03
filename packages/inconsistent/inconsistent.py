@@ -168,26 +168,37 @@ def opt_summary(language1, language2):
     cursor = conn.cursor()
     cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
 
+    summary = [['what', language1, language2]]
+
     # count all packages
+    results = ['count']
     for language in (language1, language2):
         cursor.execute("SELECT Count(*) FROM packages_{0}".format(language))
-        print('count', language, cursor.fetchall()[0][0])
+        results.append(cursor.fetchall()[0][0])
+    summary.append(results)
 
     # count missing packages
     cursor.execute("SELECT Count(*) FROM packages_{0} WHERE descmd5 NOT IN (SELECT descmd5 FROM packages_{1})".format(language2, language1))
-    print('in {0} not in {1}'.format(language2, language1), cursor.fetchall()[0][0])
+    summary.append(['not in {1}'.format(language2, language1), 0, cursor.fetchall()[0][0]])
     cursor.execute("SELECT Count(*) FROM packages_{0} WHERE descmd5 NOT IN (SELECT descmd5 FROM packages_{1})".format(language1, language2))
-    print('in {0} not in {1}'.format(language1, language2), cursor.fetchall()[0][0])
+    summary.append(['not in {1}'.format(language1, language2), cursor.fetchall()[0][0], 0])
 
     # count distinct titles
+    results = ['titles']
     for language in (language1, language2):
         cursor.execute("SELECT Count(DISTINCT title_id) FROM packages_{0}".format(language))
-        print('titles', language, cursor.fetchall()[0][0])
+        results.append(cursor.fetchall()[0][0])
+    summary.append(results)
 
     # count distinct trailers
+    results = ['trailers']
     for language in (language1, language2):
         cursor.execute("SELECT Count(DISTINCT trailer_id) FROM packages_{0}".format(language))
-        print('trailers', language, cursor.fetchall()[0][0])
+        results.append(cursor.fetchall()[0][0])
+    summary.append(results)
+
+    for row in summary:
+        print("\t".join(str(x) for x in row))
 
     cursor.close()
     conn.close()
