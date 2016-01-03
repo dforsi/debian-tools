@@ -132,14 +132,28 @@ def opt_compare(language1, language2):
 
 def suggest_string(cursor, field, package, language1, language2):
     cursor.execute("""
-SELECT Count(*), title, group_concat(name, ' ') AS packages FROM packages_{1}
- INNER JOIN title_{1} ON title_{1}.id = {2}
- WHERE descmd5 IN (
- SELECT descmd5
-  FROM packages_{0}
-  WHERE name LIKE ?
- )
- GROUP BY title
+WITH
+matching_packages AS
+(
+ SELECT DISTINCT title_id, trailer_id
+ FROM packages_{0}
+ WHERE name LIKE ?
+),
+similar_packages AS
+(
+ SELECT Count(*) AS count, (SELECT title FROM title_{0} WHERE id = title_id) AS title, group_concat(name) AS name, 1 AS type
+ FROM packages_{0}
+ WHERE title_id IN (SELECT DISTINCT title_id FROM matching_packages)
+ GROUP BY title_id
+UNION
+ SELECT Count(*), (SELECT title FROM title_{0} WHERE id = trailer_id) AS title, group_concat(name), 2
+ FROM packages_{0}
+ WHERE trailer_id IN (SELECT DISTINCT trailer_id FROM matching_packages)
+ GROUP BY trailer_id
+)
+SELECT *
+ FROM similar_packages
+ ORDER BY type, count, title
 """.format(language1, language2, field), (package, ))
     for row in cursor:
         print(row)
