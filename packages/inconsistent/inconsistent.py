@@ -130,7 +130,7 @@ def opt_compare(language1, language2):
     cursor.close()
     conn.close()
 
-def suggest_string(cursor, field, package, language1, language2):
+def suggest_string(cursor, package, language1, language2):
     cursor.execute("""
 WITH
 matching_packages AS
@@ -141,20 +141,24 @@ matching_packages AS
 ),
 similar_packages AS
 (
- SELECT Count(*) AS count, (SELECT title FROM title_{0} WHERE id = title_id) AS title, group_concat(name) AS name, 1 AS type
+ SELECT name, descmd5, 1 AS type
  FROM packages_{0}
  WHERE title_id IN (SELECT DISTINCT title_id FROM matching_packages)
- GROUP BY title_id
 UNION
- SELECT Count(*), (SELECT title FROM title_{0} WHERE id = trailer_id) AS title, group_concat(name), 2
+ SELECT name, descmd5, 2 AS type
  FROM packages_{0}
  WHERE trailer_id IN (SELECT DISTINCT trailer_id FROM matching_packages)
- GROUP BY trailer_id
 )
-SELECT *
- FROM similar_packages
- ORDER BY type, count, title
-""".format(language1, language2, field), (package, ))
+SELECT type, Count(*) as count,
+ (SELECT title FROM title_{1} WHERE id = p2.title_id AND type = 1) AS title,
+ (SELECT title FROM title_{1} WHERE id = p2.trailer_id AND type = 2) AS trailer,
+ group_concat(DISTINCT p1.name) AS name
+ FROM similar_packages AS p1
+ LEFT JOIN packages_{1} AS p2
+ ON p1.descmd5 = p2.descmd5
+ GROUP BY type, title, trailer
+ ORDER BY type, title, trailer
+""".format(language1, language2), (package, ))
     for row in cursor:
         print(row)
         #print("{0:>5} {1}".format(row[1], row[0]))
@@ -167,9 +171,7 @@ def opt_suggest_short(package, language1, language2):
     cursor = conn.cursor()
     cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
 
-    suggest_string(cursor, 'title_id', package, language1, language2)
-    print()
-    suggest_string(cursor, 'trailer_id', package, language1, language2)
+    suggest_string(cursor, package, language1, language2)
 
     cursor.close()
     conn.close()
