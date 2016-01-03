@@ -1,2 +1,6 @@
 inconsistent-*.sqlite3
+in-*-not-in-*.tsv
+paragraphs-diff-*-*.tsv
+suggest-title-*.tsv
+suggest-trailer-*.tsv
 Translation-*

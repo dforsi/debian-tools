@@ -104,30 +104,28 @@ def opt_compare(language1, language2):
     cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
 
     cursor.execute("SELECT name FROM packages_{0} WHERE descmd5 NOT IN (SELECT descmd5 FROM packages_{1}) ORDER BY name".format(language2, language1))
-    print('in {0} not in {1}'.format(language2, language1))
-    for row in cursor:
-        print(row[0])
-
-    print()
+    with open('in-{0}-not-in-{1}.tsv'.format(language2, language1), 'w') as f:
+        print('in {0} not in {1}'.format(language2, language1), file=f)
+        for row in cursor:
+            print(row[0], file=f)
 
     cursor.execute("SELECT t1.name, t1.paragraphs, t2.paragraphs FROM packages_{0} AS t1 INNER JOIN packages_{1} AS t2 ON t1.descmd5 = t2.descmd5 WHERE t1.paragraphs <> t2.paragraphs ORDER BY t1.name".format(language1, language2))
-    print('paragraphs diff {}-{}'.format(language1, language2))
-    for row in cursor:
-        print("{:>3} {}".format(row[1] - row[2], row[0]))
-
-    print()
+    with open('paragraphs-diff-{}-{}.tsv'.format(language2, language1), 'w') as f:
+        print('paragraphs diff {}-{}\tpackage'.format(language1, language2), file=f)
+        for row in cursor:
+            print("{:>3}\t{}".format(row[1] - row[2], row[0]), file=f)
 
     compare_string(cursor, 'title', language1, language2)
-    print('inconsistent title,{},{}'.format(language1, language2))
-    for row in cursor:
-        print(row)
-
-    print()
+    with open('suggest-title-{0}.tsv'.format(language2, language1), 'w') as f:
+        print('title1\ttitle2\tpackages1\tpackages2', file=f)
+        for row in cursor:
+            print('\t'.join(row), file=f)
 
     compare_string(cursor, 'trailer', language1, language2)
-    print('inconsistent trailer,{},{}'.format(language1, language2))
-    for row in cursor:
-        print(row)
+    with open('suggest-trailer-{0}.tsv'.format(language2, language1), 'w') as f:
+        print('trailer1\ttrailer2\tpackages1\tpackages2', file=f)
+        for row in cursor:
+            print('\t'.join(row), file=f)
 
     cursor.close()
     conn.close()
