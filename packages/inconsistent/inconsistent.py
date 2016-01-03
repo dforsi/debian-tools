@@ -179,6 +179,16 @@ def opt_summary(language1, language2):
     cursor.execute("SELECT Count(*) FROM packages_{0} WHERE descmd5 NOT IN (SELECT descmd5 FROM packages_{1})".format(language1, language2))
     print('in {0} not in {1}'.format(language1, language2), cursor.fetchall()[0][0])
 
+    # count distinct titles
+    for language in (language1, language2):
+        cursor.execute("SELECT Count(DISTINCT title_id) FROM packages_{0}".format(language))
+        print('titles', language, cursor.fetchall()[0][0])
+
+    # count distinct trailers
+    for language in (language1, language2):
+        cursor.execute("SELECT Count(DISTINCT trailer_id) FROM packages_{0}".format(language))
+        print('trailers', language, cursor.fetchall()[0][0])
+
     cursor.close()
     conn.close()
 
