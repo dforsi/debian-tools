@@ -141,18 +141,20 @@ matching_packages AS
 ),
 similar_packages AS
 (
- SELECT name, descmd5, 1 AS type
+ SELECT name, descmd5, 1 AS type, title_id, 0 AS trailer_id
  FROM packages_{0}
  WHERE title_id IN (SELECT DISTINCT title_id FROM matching_packages)
 UNION
- SELECT name, descmd5, 2 AS type
+ SELECT name, descmd5, 2 AS type, 0, trailer_id
  FROM packages_{0}
  WHERE trailer_id IN (SELECT DISTINCT trailer_id FROM matching_packages)
 )
 SELECT type, Count(*) as count,
  (SELECT title FROM title_{1} WHERE id = p2.title_id AND type = 1) AS title,
  (SELECT title FROM title_{1} WHERE id = p2.trailer_id AND type = 2) AS trailer,
- group_concat(DISTINCT p1.name) AS name
+ (SELECT title FROM title_{0} WHERE id = p1.title_id AND type = 1) AS title_{0},
+ (SELECT title FROM title_{0} WHERE id = p1.trailer_id AND type = 2) AS trailer_{0},
+ group_concat(DISTINCT p1.name || CASE WHEN p2.ROWID IS NULL THEN '*' ELSE '' END) AS name
  FROM similar_packages AS p1
  LEFT JOIN packages_{1} AS p2
  ON p1.descmd5 = p2.descmd5
