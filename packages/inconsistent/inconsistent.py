@@ -163,7 +163,7 @@ SELECT type, Count(*) as count,
  ORDER BY type, count, title COLLATE NOCASE, trailer COLLATE NOCASE, title_{0} COLLATE NOCASE, trailer_{0} COLLATE NOCASE
 """.format(language1, language2), (package, ))
 
-def opt_suggest_short(package, language1, language2):
+def suggest_short(package, language1, language2):
     database1 = database_fmt.format(language1)
     database2 = database_fmt.format(language2)
 
@@ -172,12 +172,16 @@ def opt_suggest_short(package, language1, language2):
     cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
 
     suggest_string(cursor, package, language1, language2)
-    writer = csv.writer(sys.stdout, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     for row in cursor:
-        writer.writerow(row)
+        yield row
 
     cursor.close()
     conn.close()
+
+def opt_suggest_short(package, language1, language2):
+    writer = csv.writer(sys.stdout, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    for row in suggest_short(package, language1, language2):
+        writer.writerow(row)
 
 def opt_summary(language1, language2):
     database1 = database_fmt.format(language1)
