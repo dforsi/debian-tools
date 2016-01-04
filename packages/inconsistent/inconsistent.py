@@ -17,6 +17,7 @@
 import sys
 import sqlite3
 import re
+import csv
 
 database_fmt = 'inconsistent-{0}.sqlite3'
 datafile_fmt = 'Translation-{0}'
@@ -158,12 +159,9 @@ SELECT type, Count(*) as count,
  FROM similar_packages AS p1
  LEFT JOIN packages_{1} AS p2
  ON p1.descmd5 = p2.descmd5
- GROUP BY type, title, trailer
- ORDER BY type, title, trailer
+ GROUP BY type, p1.title_id, p1.trailer_id
+ ORDER BY type, count, title COLLATE NOCASE, trailer COLLATE NOCASE, title_{0} COLLATE NOCASE, trailer_{0} COLLATE NOCASE
 """.format(language1, language2), (package, ))
-    for row in cursor:
-        print(row)
-        #print("{0:>5} {1}".format(row[1], row[0]))
 
 def opt_suggest_short(package, language1, language2):
     database1 = database_fmt.format(language1)
@@ -174,6 +172,9 @@ def opt_suggest_short(package, language1, language2):
     cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
 
     suggest_string(cursor, package, language1, language2)
+    writer = csv.writer(sys.stdout, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    for row in cursor:
+        writer.writerow(row)
 
     cursor.close()
     conn.close()
