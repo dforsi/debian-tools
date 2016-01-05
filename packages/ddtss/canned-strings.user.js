@@ -124,8 +124,9 @@ function add_buttons(comment_el, comment_strings, is_update) {
         var text = document.createTextNode(comment_strings[i]);
         button.appendChild(text);
         button.onclick = function (element, nick, comment) {
+          var extra_newlines = (element.value != '' ? '\n\n' : '');
           // prepend comment
-          element.value = nick + comment + "\n\n" + element.value;
+          element.value = nick + comment + extra_newlines + element.value;
           return false;
         }.bind(this, comment_el[0], nick, comment_strings[i]);
         span_el.appendChild(button);
