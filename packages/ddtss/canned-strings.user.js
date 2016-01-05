@@ -85,6 +85,9 @@ if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling)
 
   // Add buttons near the comments box
   var comment_el = document.getElementsByName("comment");
+  add_buttons(comment_el, comment_strings);
+
+function add_buttons(comment_el, comment_strings) {
   if (comment_el[0]) {
     var span_el = document.createElement("span");
     span_el.style = "display:inline-block;vertical-align:top";
@@ -106,5 +109,6 @@ if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling)
     }
     comment_el[0].parentNode.insertBefore(span_el, comment_el.nextSibling);
   }
+}
 }
 }
