@@ -100,7 +100,7 @@ if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling)
 
 function add_paragraphs_info(comment_el, paragraphs, is_update) {
   if (comment_el[0]) {
-    var text = 'Modified: ';
+    var text = 'Need (re)translation: ';
     for (var i = 0; i < paragraphs.length; i++) {
         text += i + (paragraphs[i] == '0' ? '* ' : ' ');
     }
