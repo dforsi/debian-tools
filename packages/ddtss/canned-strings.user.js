@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name Canned strings for DDTSS
 // @description Add prepared phrases for comments
-// @version 0.2
+// @version 0.3
+// @match https://ddtp.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
 // ==/UserScript==
@@ -83,9 +84,17 @@ if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling)
     }
   }
 
-  // Add buttons near the comments box
-  var comment_el = document.getElementsByName("comment");
-  add_buttons(comment_el, comment_strings);
+function add_paragraphs_info(comment_el, paragraphs) {
+  if (comment_el[0]) {
+    var text = 'Modified: ';
+    for (var i = 0; i < paragraphs.length; i++) {
+        text += i + (paragraphs[i] == '0' ? '* ' : ' ');
+    }
+    var span_el = document.createElement("span");
+    span_el.innerHTML = text + '<br/>';
+    comment_el[0].parentNode.insertBefore(span_el, comment_el[0]);
+  }
+}
 
 function add_buttons(comment_el, comment_strings) {
   if (comment_el[0]) {
@@ -110,5 +119,14 @@ function add_buttons(comment_el, comment_strings) {
     comment_el[0].parentNode.insertBefore(span_el, comment_el.nextSibling);
   }
 }
+
+  if (document.location.toString().match('https://ddtp.debian.net/ddtss/index.cgi/.+/translate/.+')) {
+    // Add buttons near the comments box
+    var target_el = document.getElementsByName("comment");
+    add_buttons(target_el, comment_strings);
+  }
+  var target_el = document.getElementsByName("long");
+  add_paragraphs_info(target_el, paragraphs);
+
 }
 }
