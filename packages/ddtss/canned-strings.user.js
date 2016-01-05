@@ -50,12 +50,18 @@ if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling)
     text = "titolo AUTO";
   } else if (paragraphs.match(/^010*$/)) {
     text = "primo AUTO";
+  } else if (paragraphs.match(/^010+1$/)) {
+    text = "primo e ultimo AUTO";
   } else if (paragraphs.match(/^00+1$/)) {
     text = "ultimo AUTO";
   } else if (paragraphs.match(/^01+$/)) {
     text = "solo titolo";
+  } else if (paragraphs.match(/^01+0$/)) {
+    text = "solo titolo e ultimo";
   } else if (paragraphs.match(/^101*$/)) {
     text = "solo primo";
+  } else if (paragraphs.match(/^10+0$/)) {
+    text = "solo primo e ultimo";
   } else if (paragraphs.match(/^11+0$/)) {
     text = "solo ultimo";
   } else if (paragraphs.match(/^0+$/)) {
