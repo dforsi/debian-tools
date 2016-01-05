@@ -19,18 +19,18 @@ var comment_strings = [
 // an empty string is used to start a new row of buttons
 comment_strings.push("");
 
-var element = document.getElementsByName("short");
-// "1" means automatically translated
-var newtitle = element[0] && element[0].value == "<trans>" ? "0" : "1";
+var element = document.getElementsByTagName('h3');
 
-var element = document.getElementsByName("long");
-if (element[0]) {
-  var re = /\n\.\n/g;
-  // using slice() to remove trailing \n
-  var parts = element[0].value.slice(0 , -1).split(re);
+if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling) {
+  // "0" means needs translation
+  var title = element[0].nextSibling.textContent.match(/Description-[^:]+: (.*)/);
+  var newtitle = title && title[1] == "<trans>" ? "0" : "1";
+
+  var parts = element[0].nextSibling.textContent.split(/Description-[^:]+: (.*)\n/)[2].split(/\n(?:#.*| \.)\n/)
+  parts.splice(-2);
   var paragraphs = newtitle;
   for (var i = 0; i < parts.length; i++) {
-    paragraphs += (parts[i] == "<trans>" ? "0" : "1");
+    paragraphs += (parts[i] == " <trans>" ? "0" : "1");
   }
 
   console.log("paragraphs", paragraphs);
