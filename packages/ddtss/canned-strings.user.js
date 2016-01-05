@@ -69,7 +69,7 @@ if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling)
   }
 
   if (text) {
-    comment_strings.push(text);
+    comment_strings.push((is_update ? 'AGG ' : 'NUOVO ') + text);
   } else {
     text = '';
     if (newtitle) {
@@ -94,7 +94,7 @@ if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling)
       }
     }
     if (text) {
-      comment_strings.push('nuovi o aggiornati:' + text);
+      comment_strings.push((is_update ? 'AGG ' : 'NUOVO ') + text);
     }
   }
 
@@ -121,7 +121,7 @@ function add_buttons(comment_el, comment_strings, is_update) {
         span_el.appendChild(br);
       } else {
         var button = document.createElement("button");
-        var text = document.createTextNode((is_update ? '' : 'NUOVO, ') + comment_strings[i]);
+        var text = document.createTextNode(comment_strings[i]);
         button.appendChild(text);
         button.onclick = function (element, nick, comment) {
           // prepend comment
