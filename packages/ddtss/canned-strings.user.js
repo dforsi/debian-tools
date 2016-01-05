@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name Canned strings for DDTSS
 // @description Add prepared phrases for comments
-// @version 0.1
+// @version 0.2
 // @match https://ddtp.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
 // ==/UserScript==
-// Daniele Forsi 30/12/2015
+// Daniele Forsi 05/01/2016
 // Creative Commons Zero
 
 {
@@ -60,9 +60,9 @@ if (element[0]) {
     if (!newtitle) {
         text += ' titolo';
     }
-    for (var i = 0; i < paragraphs.length; i++) {
+    for (var i = 1; i < paragraphs.length; i++) {
       if (paragraphs[i] == "1") {
-        text += ' ' + (i + 1);
+        text += ' ' + i;
       }
     }
     if (text) {
@@ -73,9 +73,9 @@ if (element[0]) {
     if (newtitle) {
         text += ' titolo';
     }
-    for (var i = 0; i < paragraphs.length; i++) {
+    for (var i = 1; i < paragraphs.length; i++) {
       if (paragraphs[i] == "0") {
-        text += ' ' + (i + 1);
+        text += ' ' + i;
       }
     }
     if (text) {
