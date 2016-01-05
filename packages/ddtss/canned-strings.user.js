@@ -16,6 +16,7 @@ var comment_strings = [
   "rich. per TYPO",
   "rich. per uniformare",
 ].sort();
+comment_strings.push("FITT. ");
 
 // an empty string is used to start a new row of buttons
 comment_strings.push("");
