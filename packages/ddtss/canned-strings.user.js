@@ -20,8 +20,16 @@ var comment_strings = [
 // an empty string is used to start a new row of buttons
 comment_strings.push("");
 
-var element = document.getElementsByTagName('h3');
+var previous_el = document.getElementsByTagName('h5');
+var is_update = false;
+for (var i = 0; i < previous_el.length; i++) {
+  if (previous_el[i].textContent == 'Information about previous translation') {
+    is_update = true;
+    break;
+  }
+}
 
+var element = document.getElementsByTagName('h3');
 if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling) {
   // "0" means needs translation
   var title = element[0].nextSibling.textContent.match(/Description-[^:]+: (.*)/);
@@ -84,19 +92,20 @@ if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling)
     }
   }
 
-function add_paragraphs_info(comment_el, paragraphs) {
+function add_paragraphs_info(comment_el, paragraphs, is_update) {
   if (comment_el[0]) {
     var text = 'Modified: ';
     for (var i = 0; i < paragraphs.length; i++) {
         text += i + (paragraphs[i] == '0' ? '* ' : ' ');
     }
+    text += (is_update ? ' UPD' : ' NEW');
     var span_el = document.createElement("span");
     span_el.innerHTML = text + '<br/>';
     comment_el[0].parentNode.insertBefore(span_el, comment_el[0]);
   }
 }
 
-function add_buttons(comment_el, comment_strings) {
+function add_buttons(comment_el, comment_strings, is_update) {
   if (comment_el[0]) {
     var span_el = document.createElement("span");
     span_el.style = "display:inline-block;vertical-align:top";
@@ -106,7 +115,7 @@ function add_buttons(comment_el, comment_strings) {
         span_el.appendChild(br);
       } else {
         var button = document.createElement("button");
-        var text = document.createTextNode(comment_strings[i]);
+        var text = document.createTextNode((is_update ? '' : 'NUOVO, ') + comment_strings[i]);
         button.appendChild(text);
         button.onclick = function (element, nick, comment) {
           // prepend comment
@@ -123,10 +132,10 @@ function add_buttons(comment_el, comment_strings) {
   if (document.location.toString().match('https://ddtp.debian.net/ddtss/index.cgi/.+/translate/.+')) {
     // Add buttons near the comments box
     var target_el = document.getElementsByName("comment");
-    add_buttons(target_el, comment_strings);
+    add_buttons(target_el, comment_strings, is_update);
   }
   var target_el = document.getElementsByName("long");
-  add_paragraphs_info(target_el, paragraphs);
+  add_paragraphs_info(target_el, paragraphs, is_update);
 
 }
 }
