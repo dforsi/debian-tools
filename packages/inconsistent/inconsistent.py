@@ -87,6 +87,8 @@ SELECT p0.name, Count(*) AS count, t.title
 GROUP BY p0.name, t.title
 ORDER BY p0.name, count DESC, t.title
 """.format(language1, language2, field))
+    for row in cursor:
+        yield row
 
 def opt_compare(language1, language2):
     database1 = database_fmt.format(language1)
@@ -109,11 +111,10 @@ def opt_compare(language1, language2):
             print("{:>3}\t{}".format(row[1] - row[2], row[0]), file=f)
 
     for field in ['title', 'trailer']:
-        compare_string(cursor, field, language1, language2)
         with open('suggest-{2}-{0}.tsv'.format(language2, language1, field), 'w') as f:
             writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(('package', 'count', field))
-            for row in cursor:
+            for row in compare_string(cursor, field, language1, language2):
                 writer.writerow(row)
 
     cursor.close()
