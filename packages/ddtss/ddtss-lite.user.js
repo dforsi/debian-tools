@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name DDTSS Helper
 // @description Add stuff to DDTSS pages
-// @version 0.4
+// @version 0.3
 // @match https://ddtp.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
 // ==/UserScript==
-// Daniele Forsi 05/01/2016
+// Daniele Forsi 28/12/2015
 // Creative Commons Zero
 
 // Add description length
@@ -53,10 +53,4 @@ if (ul_el[0]) {
 var iframe = document.getElementsByTagName('iframe');
 if (iframe[0]) {
   iframe[0].src = iframe[0].src.replace("http:", "")
-}
-
-// Make http links active in the "Raw form"
-var rawform = document.getElementsByTagName('h3');
-if (rawform[0].innerHTML == 'Raw form:' && rawform[0].nextSibling) {
-  rawform[0].nextSibling.innerHTML = rawform[0].nextSibling.innerHTML.replace(/(https?:\/\/[^ ),:'\n]+)/gm, '<a href="$1" target="_blank">$1</a>');
 }
