@@ -76,24 +76,16 @@ def opt_update(language):
 
 def compare_string(cursor, field, language1, language2):
     cursor.execute("""
-WITH candidates AS (
- SELECT t1.name, t1.{2}_id AS {2}_id1, t2.{2}_id AS {2}_id2
- FROM packages_{0} AS t1
- INNER JOIN packages_{1} AS t2
- ON t1.descmd5 = t2.descmd5
- WHERE t1.{2}_id IS NOT NULL AND t2.{2}_id IS NOT NULL
-)
-SELECT
- (SELECT title FROM title_{1} WHERE id = c1.{2}_id2) AS {2}1,
- (SELECT title FROM title_{1} WHERE id = c2.{2}_id2) AS {2}2,
- group_concat(DISTINCT c1.name) AS packages1,
- group_concat(DISTINCT c2.name) AS packages2
- FROM candidates AS c1
- INNER JOIN candidates AS c2
- ON c1.{2}_id1 = c2.{2}_id1
- WHERE c1.{2}_id2 < c2.{2}_id2
-GROUP BY {2}1, {2}2
-ORDER BY {2}1, {2}2
+SELECT p0.name, Count(*) AS count, t.title
+ FROM packages_{0} AS p0
+ INNER JOIN packages_{0} AS p1 ON p1.{2}_id = p0.{2}_id
+ INNER JOIN packages_{1} AS p2 ON p2.descmd5 = p1.descmd5
+ INNER JOIN title_{1} AS t ON t.id = p2.{2}_id
+ WHERE p0.rowid <> p1.rowid AND p0.descmd5 not IN (
+  SELECT descmd5 FROM packages_{1}
+ )
+GROUP BY p0.name, t.title
+ORDER BY p0.name, count DESC, t.title
 """.format(language1, language2, field))
 
 def opt_compare(language1, language2):
@@ -116,17 +108,13 @@ def opt_compare(language1, language2):
         for row in cursor:
             print("{:>3}\t{}".format(row[1] - row[2], row[0]), file=f)
 
-    compare_string(cursor, 'title', language1, language2)
-    with open('suggest-title-{0}.tsv'.format(language2, language1), 'w') as f:
-        print('title1\ttitle2\tpackages1\tpackages2', file=f)
-        for row in cursor:
-            print('\t'.join(row), file=f)
-
-    compare_string(cursor, 'trailer', language1, language2)
-    with open('suggest-trailer-{0}.tsv'.format(language2, language1), 'w') as f:
-        print('trailer1\ttrailer2\tpackages1\tpackages2', file=f)
-        for row in cursor:
-            print('\t'.join(row), file=f)
+    for field in ['title', 'trailer']:
+        compare_string(cursor, field, language1, language2)
+        with open('suggest-{2}-{0}.tsv'.format(language2, language1, field), 'w') as f:
+            writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            writer.writerow(('package', 'count', field))
+            for row in cursor:
+                writer.writerow(row)
 
     cursor.close()
     conn.close()
