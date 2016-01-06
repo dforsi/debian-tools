@@ -59,6 +59,8 @@ def opt_update(language):
                 trailer_id = add_title(cursor, language, parts[1])
             else:
                 #print(parts[0])
+                # an empty trailer is acceptable but and empty string would match
+                # lots of unrelated packages slowing queries down to a crawl
                 trailer_id = None
             title_id = add_title(cursor, language, parts[0])
             paragraphs = 1 + package[description].count('\n.\n')
