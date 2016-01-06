@@ -121,34 +121,16 @@ def opt_compare(language1, language2):
 
 def suggest_string(cursor, package, language1, language2):
     cursor.execute("""
-WITH
-matching_packages AS
-(
- SELECT DISTINCT title_id, trailer_id
- FROM packages_{0}
- WHERE name LIKE ?
-),
-similar_packages AS
-(
- SELECT name, descmd5, 1 AS type, title_id, 0 AS trailer_id
- FROM packages_{0}
- WHERE title_id IN (SELECT DISTINCT title_id FROM matching_packages)
-UNION
- SELECT name, descmd5, 2 AS type, 0, trailer_id
- FROM packages_{0}
- WHERE trailer_id IN (SELECT DISTINCT trailer_id FROM matching_packages)
-)
-SELECT type, Count(*) as count,
- (SELECT title FROM title_{1} WHERE id = p2.title_id AND type = 1) AS title,
- (SELECT title FROM title_{1} WHERE id = p2.trailer_id AND type = 2) AS trailer,
- (SELECT title FROM title_{0} WHERE id = p1.title_id AND type = 1) AS title_{0},
- (SELECT title FROM title_{0} WHERE id = p1.trailer_id AND type = 2) AS trailer_{0},
- group_concat(DISTINCT p1.name || CASE WHEN p2.ROWID IS NULL THEN '*' ELSE '' END) AS name
- FROM similar_packages AS p1
- LEFT JOIN packages_{1} AS p2
- ON p1.descmd5 = p2.descmd5
- GROUP BY type, p1.title_id, p1.trailer_id
- ORDER BY type, count, title COLLATE NOCASE, trailer COLLATE NOCASE, title_{0} COLLATE NOCASE, trailer_{0} COLLATE NOCASE
+SELECT DISTINCT p0.name, ti.title, tr.title AS trailer
+ FROM packages_{0} AS p0
+ LEFT JOIN packages_{0} AS p1 ON p1.title_id = p0.title_id AND p1.rowid <> p0.rowid
+ LEFT JOIN packages_{0} AS p2 ON p2.trailer_id = p0.trailer_id AND p2.rowid <> p0.rowid
+ LEFT JOIN packages_{1} AS p3 ON p3.descmd5 = p1.descmd5
+ LEFT JOIN packages_{1} AS p4 ON p4.descmd5 = p2.descmd5
+ LEFT JOIN title_{1} AS ti ON ti.id = p3.title_id
+ LEFT JOIN title_{1} AS tr ON tr.id = p4.trailer_id
+ WHERE NOT (p3.title_id IS NULL AND p4.trailer_id IS NULL) AND p0.name LIKE ?
+ ORDER BY p0.name, ti.title, tr.title
 """.format(language1, language2), (package, ))
 
 def suggest_short(package, language1, language2):
