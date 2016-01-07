@@ -128,8 +128,8 @@ SELECT DISTINCT p0.name, ti.title, tr.title AS trailer
  FROM packages_{0} AS p0
  LEFT JOIN packages_{0} AS p1 ON p1.title_id = p0.title_id AND p1.rowid <> p0.rowid
  LEFT JOIN packages_{0} AS p2 ON p2.trailer_id = p0.trailer_id AND p2.rowid <> p0.rowid
- LEFT JOIN packages_{1} AS p3 ON p3.descmd5 = p1.descmd5
- LEFT JOIN packages_{1} AS p4 ON p4.descmd5 = p2.descmd5
+ INNER JOIN packages_{1} AS p3 ON p3.descmd5 = p1.descmd5
+ INNER JOIN packages_{1} AS p4 ON p4.descmd5 = p2.descmd5
  LEFT JOIN title_{1} AS ti ON ti.id = p3.title_id
  LEFT JOIN title_{1} AS tr ON tr.id = p4.trailer_id
  WHERE NOT (p3.title_id IS NULL AND p4.trailer_id IS NULL) AND p0.name LIKE ?
