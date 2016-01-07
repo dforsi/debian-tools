@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name Canned strings for DDTSS
 // @description Add prepared phrases for comments
-// @version 0.3
+// @version 0.4
 // @match https://ddtp.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
 // ==/UserScript==
-// Daniele Forsi 05/01/2016
+// Daniele Forsi 07/01/2016
 // Creative Commons Zero
 
 {
