@@ -73,7 +73,7 @@ if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling)
     comment_strings.push((is_update ? 'AGG ' : 'NUOVO ') + text);
   } else {
     text = '';
-    if (newtitle) {
+    if (newtitle == "1") {
         text += ' titolo';
     }
     for (var i = 1; i < paragraphs.length; i++) {
@@ -86,7 +86,7 @@ if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling)
     }
 
     text = '';
-    if (!newtitle) {
+    if (newtitle == "0") {
         text += ' titolo';
     }
     for (var i = 1; i < paragraphs.length; i++) {
