@@ -5,5 +5,7 @@ The DDTS Satellite or Debian Distributed Translation Server Satellite
 Its home page is at http://ddtp.debian.net/ddtss/index.cgi/xx
 
 This directory contains:
+ * canned-strings.user.js - a Greasemonkey user script that adds some
+   buttons to quickly insert comments
  * ddtss-lite.user.js - a Greasemonkey user script that adds some
    functionalities to the DDTSS pages
