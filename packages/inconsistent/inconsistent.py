@@ -52,7 +52,7 @@ def opt_update(language):
         description ='Description-{0}'.format(language)
         for package in get_package(f):
             title = package[description].split('\n')[0]
-            parts = re.split(" +\(([^(]+)\)$| +\[(.+)\]$|(?: --| - -| -|;) +(.+)$", title)
+            parts = re.split(" +\(([^(]+)\)$| +\[(.+)\]$|(?: --| - -| -(?!.* -- )|;) +(.+)$", title)
             parts = [x for x in parts if x]
             if len(parts) == 2:
                 #print(parts[0], parts[1])
