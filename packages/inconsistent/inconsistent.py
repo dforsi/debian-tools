@@ -122,7 +122,7 @@ def opt_compare(language1, language2):
         cursor.execute("""
 WITH
 all_titles AS (
-SELECT p0.{2}_id AS {2}_id{0}, p2.{2}_id AS {2}_id{1}
+SELECT p0.{2}_id AS {2}_id{0}, p2.{2}_id AS {2}_id{1}, group_concat(DISTINCT p2.name) AS packages
  FROM packages_{0} AS p0
  INNER JOIN packages_{0} AS p1
  ON p0.{2}_id = p1.{2}_id
@@ -130,7 +130,7 @@ SELECT p0.{2}_id AS {2}_id{0}, p2.{2}_id AS {2}_id{1}
  ON p1.descmd5 = p2.descmd5
  GROUP BY p0.{2}_id, p2.{2}_id
 )
-SELECT t0.title AS {2}_{0}, t1.title AS {2}_{1}
+SELECT t0.title AS {2}_{0}, t1.title AS {2}_{1}, packages
  FROM all_titles
  INNER JOIN title_{0} AS t0 ON t0.id = {2}_id{0}
  INNER JOIN title_{1} AS t1 ON t1.id = {2}_id{1}
@@ -144,7 +144,7 @@ ORDER BY {2}_{0}, {2}_{1}
 """.format(language1, language2, field))
         with open('different-{2}-{0}-{1}.tsv'.format(language1, language2, field), 'w') as f:
             writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(('desc {}'.format(language1), 'desc {}'.format(language2)))
+            writer.writerow(('desc {}'.format(language1), 'desc {}'.format(language2), 'packages'))
             for row in cursor:
                 writer.writerow(row)
 
