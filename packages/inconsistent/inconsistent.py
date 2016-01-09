@@ -133,7 +133,7 @@ SELECT p0.{2}_id AS {2}_id{0}, p2.{2}_id AS {2}_id{1}, group_concat(DISTINCT p2.
 SELECT t0.title AS {2}_{0}, t1.title AS {2}_{1}, packages
  FROM all_titles
  INNER JOIN title_{0} AS t0 ON t0.id = {2}_id{0}
- INNER JOIN title_{1} AS t1 ON t1.id = {2}_id{1}
+ LEFT JOIN title_{1} AS t1 ON t1.id = {2}_id{1}
  WHERE {2}_id{0} IN (
   SELECT {2}_id{0}
   FROM all_titles
