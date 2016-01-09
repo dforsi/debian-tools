@@ -119,6 +119,35 @@ def opt_compare(language1, language2):
             for row in compare_string(cursor, field, language1, language2):
                 writer.writerow(row)
 
+        cursor.execute("""
+WITH
+all_titles AS (
+SELECT p0.{2}_id AS {2}_id{0}, p2.{2}_id AS {2}_id{1}
+ FROM packages_{0} AS p0
+ INNER JOIN packages_{0} AS p1
+ ON p0.{2}_id = p1.{2}_id
+ INNER JOIN packages_{1} AS p2
+ ON p1.descmd5 = p2.descmd5
+ GROUP BY p0.{2}_id, p2.{2}_id
+)
+SELECT t0.title AS {2}_{0}, t1.title AS {2}_{1}
+ FROM all_titles
+ INNER JOIN title_{0} AS t0 ON t0.id = {2}_id{0}
+ INNER JOIN title_{1} AS t1 ON t1.id = {2}_id{1}
+ WHERE {2}_id{0} IN (
+  SELECT {2}_id{0}
+  FROM all_titles
+  GROUP BY {2}_id{0}
+  HAVING Count(*) > 1
+ )
+ORDER BY {2}_{0}, {2}_{1}
+""".format(language1, language2, field))
+        with open('different-{2}-{0}-{1}.tsv'.format(language1, language2, field), 'w') as f:
+            writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            writer.writerow(('desc {}'.format(language1), 'desc {}'.format(language2)))
+            for row in cursor:
+                writer.writerow(row)
+
     cursor.close()
     conn.close()
 
