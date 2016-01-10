@@ -149,19 +149,19 @@ ORDER BY {2}_{0}, {2}_{1}
                 writer.writerow(row)
 
         cursor.execute("""
-SELECT Count(*) AS count, title AS {2}
- FROM title_{0} AS t0
- INNER JOIN packages_{0} AS p0
+SELECT Count(*) - Count(p1.descmd5) AS untranslated, Count(p1.descmd5) AS translated, title AS {2}
+ FROM packages_{0} AS p0
+ LEFT JOIN packages_{1} AS p1
+ ON p0.descmd5 = p1.descmd5
+ INNER JOIN title_{0} AS t0
  ON t0.id = p0.{2}_id
- WHERE descmd5 NOT IN (
-  SELECT descmd5 FROM packages_{1}
- )
  GROUP BY {2}
- ORDER BY count DESC, title
+ HAVING untranslated <> 0
+ ORDER BY untranslated DESC, translated DESC, {2} COLLATE NOCASE
 """.format(language1, language2, field))
-        with open('missing-{2}-{0}-{1}.tsv'.format(language1, language2, field), 'w') as f:
+        with open('frequency-{2}-{0}-{1}.tsv'.format(language1, language2, field), 'w') as f:
             writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(('count', field))
+            writer.writerow(('untranslated', 'translated', field))
             for row in cursor:
                 writer.writerow(row)
 
