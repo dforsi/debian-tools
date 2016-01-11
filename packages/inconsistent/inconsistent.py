@@ -91,7 +91,7 @@ SELECT p0.name, Count(*) AS count, t.title
  INNER JOIN packages_{0} AS p1 ON p1.{2}_id = p0.{2}_id
  INNER JOIN packages_{1} AS p2 ON p2.descmd5 = p1.descmd5
  INNER JOIN title_{1} AS t ON t.id = p2.{2}_id
- WHERE p0.rowid <> p1.rowid AND p0.descmd5 not IN (
+ WHERE p0.descmd5 not IN (
   SELECT descmd5 FROM packages_{1}
  )
 GROUP BY p0.name, t.title
