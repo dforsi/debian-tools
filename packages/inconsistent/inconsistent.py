@@ -29,6 +29,14 @@ def usage():
     print('  --summary LANGUAGE1 LANGUAGE2  prints differences between LANGUAGE1 and LANGUAGE2')
     print('  --update LANGUAGE      updates the database with the given LANGUAGE')
 
+def query2csv(cursor, query, filename, header):
+    cursor.execute(query)
+    with open(filename, 'w') as f:
+        writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        writer.writerow(header)
+        for row in cursor:
+            writer.writerow(row)
+
 def add_title(cursor, language, title):
     try:
         cursor.execute("INSERT INTO title_{0} (title) VALUES (?)".format(language), (title,))
@@ -100,17 +108,15 @@ def opt_compare(language1, language2):
     cursor = conn.cursor()
     cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
 
-    cursor.execute("SELECT name FROM packages_{0} WHERE descmd5 NOT IN (SELECT descmd5 FROM packages_{1}) ORDER BY name".format(language2, language1))
-    with open('in-{0}-not-in-{1}.tsv'.format(language2, language1), 'w') as f:
-        print('in {0} not in {1}'.format(language2, language1), file=f)
-        for row in cursor:
-            print(row[0], file=f)
+    query = "SELECT name FROM packages_{0} WHERE descmd5 NOT IN (SELECT descmd5 FROM packages_{1}) ORDER BY name".format(language2, language1)
+    filename = 'in-{0}-not-in-{1}.tsv'.format(language2, language1)
+    header = ('in {0} not in {1}'.format(language2, language1), )
+    query2csv(cursor, query, filename, header)
 
-    cursor.execute("SELECT t1.name, t1.paragraphs, t2.paragraphs FROM packages_{0} AS t1 INNER JOIN packages_{1} AS t2 ON t1.descmd5 = t2.descmd5 WHERE t1.paragraphs <> t2.paragraphs ORDER BY t1.name".format(language1, language2))
-    with open('paragraphs-diff-{}-{}.tsv'.format(language2, language1), 'w') as f:
-        print('paragraphs diff {}-{}\tpackage'.format(language1, language2), file=f)
-        for row in cursor:
-            print("{:>3}\t{}".format(row[1] - row[2], row[0]), file=f)
+    query = "SELECT t1.paragraphs - t2.paragraphs AS diff, t1.name FROM packages_{0} AS t1 INNER JOIN packages_{1} AS t2 ON t1.descmd5 = t2.descmd5 WHERE t1.paragraphs <> t2.paragraphs ORDER BY t1.name".format(language1, language2)
+    filename = 'paragraphs-diff-{}-{}.tsv'.format(language1, language2)
+    header = ('paragraphs diff {}-{}'.format(language1, language2), 'package')
+    query2csv(cursor, query, filename, header)
 
     for field in ['title', 'trailer']:
         with open('suggest-{2}-{0}.tsv'.format(language2, language1, field), 'w') as f:
@@ -119,7 +125,7 @@ def opt_compare(language1, language2):
             for row in compare_string(cursor, field, language1, language2):
                 writer.writerow(row)
 
-        cursor.execute("""
+        query = """
 WITH
 all_titles AS (
 SELECT p0.{2}_id AS {2}_id{0}, p2.{2}_id AS {2}_id{1}, group_concat(DISTINCT p2.name) AS packages
@@ -141,14 +147,12 @@ SELECT t0.title AS {2}_{0}, t1.title AS {2}_{1}, packages
   HAVING Count(*) > 1
  )
 ORDER BY {2}_{0}, {2}_{1}
-""".format(language1, language2, field))
-        with open('different-{2}-{0}-{1}.tsv'.format(language1, language2, field), 'w') as f:
-            writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(('desc {}'.format(language1), 'desc {}'.format(language2), 'packages'))
-            for row in cursor:
-                writer.writerow(row)
+""".format(language1, language2, field)
+        filename = 'different-{2}-{0}-{1}.tsv'.format(language1, language2, field)
+        header = ('desc {}'.format(language1), 'desc {}'.format(language2), 'packages')
+        query2csv(cursor, query, filename, header)
 
-        cursor.execute("""
+        query = """
 SELECT Count(*) - Count(p1.descmd5) AS untranslated, Count(p1.descmd5) AS translated, title AS {2}
  FROM packages_{0} AS p0
  LEFT JOIN packages_{1} AS p1
@@ -158,12 +162,10 @@ SELECT Count(*) - Count(p1.descmd5) AS untranslated, Count(p1.descmd5) AS transl
  GROUP BY {2}
  HAVING untranslated <> 0
  ORDER BY untranslated DESC, translated DESC, {2} COLLATE NOCASE
-""".format(language1, language2, field))
-        with open('frequency-{2}-{0}-{1}.tsv'.format(language1, language2, field), 'w') as f:
-            writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(('untranslated', 'translated', field))
-            for row in cursor:
-                writer.writerow(row)
+""".format(language1, language2, field)
+        filename = 'frequency-{2}-{0}-{1}.tsv'.format(language1, language2, field)
+        header = ('untranslated', 'translated', field)
+        query2csv(cursor, query, filename, header)
 
     cursor.close()
     conn.close()
