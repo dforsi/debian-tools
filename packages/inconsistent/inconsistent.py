@@ -127,26 +127,27 @@ def opt_compare(language1, language2):
 
         query = """
 WITH
-all_titles AS (
-SELECT p0.{2}_id AS {2}_id{0}, p2.{2}_id AS {2}_id{1}, group_concat(DISTINCT p2.name) AS packages
- FROM packages_{0} AS p0
- INNER JOIN packages_{0} AS p1
- ON p0.{2}_id = p1.{2}_id
- INNER JOIN packages_{1} AS p2
- ON p1.descmd5 = p2.descmd5
- GROUP BY p0.{2}_id, p2.{2}_id
+translations AS (
+SELECT t0.title AS {2}_{0}, t1.title AS {2}_{1}, group_concat(p0.name) AS packages
+ FROM title_{0} AS t0
+ INNER JOIN packages_{0} AS p0
+ ON t0.id = p0.{2}_id
+ INNER JOIN packages_{1} AS p1
+ ON p1.descmd5 = p0.descmd5
+ INNER JOIN title_{1} AS t1
+ ON t1.id = p1.{2}_id
+ GROUP BY t0.title, t1.title
 )
-SELECT t0.title AS {2}_{0}, t1.title AS {2}_{1}, packages
- FROM all_titles
- INNER JOIN title_{0} AS t0 ON t0.id = {2}_id{0}
- LEFT JOIN title_{1} AS t1 ON t1.id = {2}_id{1}
- WHERE {2}_id{0} IN (
-  SELECT {2}_id{0}
-  FROM all_titles
-  GROUP BY {2}_id{0}
-  HAVING Count(*) > 1
- )
-ORDER BY {2}_{0}, {2}_{1}
+SELECT t1.{2}_{0}, t1.{2}_{1}, packages
+ FROM translations AS t1
+ INNER JOIN (
+ SELECT {2}_{0}
+ FROM translations
+ GROUP BY {2}_{0}
+ HAVING Count(*) > 1
+ ) AS t0
+ ON t1.{2}_{0} = t0.{2}_{0}
+ ORDER BY t1.{2}_{0}, t1.{2}_{1}
 """.format(language1, language2, field)
         filename = 'different-{2}-{0}-{1}.tsv'.format(language1, language2, field)
         header = ('desc {}'.format(language1), 'desc {}'.format(language2), 'packages')
