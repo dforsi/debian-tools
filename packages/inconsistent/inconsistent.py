@@ -108,10 +108,15 @@ def opt_compare(language1, language2):
     cursor = conn.cursor()
     cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
 
+    # List packages that are present in the translated file but not in the original file
+
     query = "SELECT name FROM packages_{0} WHERE descmd5 NOT IN (SELECT descmd5 FROM packages_{1}) ORDER BY name".format(language2, language1)
     filename = 'in-{0}-not-in-{1}.tsv'.format(language2, language1)
     header = ('in {0} not in {1}'.format(language2, language1), )
     query2csv(cursor, query, filename, header)
+
+    # List packages whose translation has a different number of paragraphs
+    # (a negative number means less paragraphs in the original file than in the translated file)
 
     query = "SELECT t1.paragraphs - t2.paragraphs AS diff, t1.name FROM packages_{0} AS t1 INNER JOIN packages_{1} AS t2 ON t1.descmd5 = t2.descmd5 WHERE t1.paragraphs <> t2.paragraphs ORDER BY t1.name".format(language1, language2)
     filename = 'paragraphs-diff-{}-{}.tsv'.format(language1, language2)
@@ -119,11 +124,16 @@ def opt_compare(language1, language2):
     query2csv(cursor, query, filename, header)
 
     for field in ['title', 'trailer']:
+
+        # List all suggestions for packages not yet translated
+
         with open('suggest-{2}-{0}.tsv'.format(language2, language1, field), 'w') as f:
             writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(('package', 'count', field))
             for row in compare_string(cursor, field, language1, language2):
                 writer.writerow(row)
+
+        # List all strings that are translated in more than one way
 
         query = """
 WITH
@@ -152,6 +162,8 @@ SELECT t1.{2}_{0}, count, t1.{2}_{1}, packages
         filename = 'different-{2}-{0}-{1}.tsv'.format(language1, language2, field)
         header = ('desc {}'.format(language1), 'count', 'desc {}'.format(language2), 'packages')
         query2csv(cursor, query, filename, header)
+
+        # List all strings for which at least one package is not yet translated
 
         query = """
 SELECT Count(*) - Count(p1.descmd5) AS untranslated, Count(p1.descmd5) AS translated, title AS {2}
