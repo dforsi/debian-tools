@@ -128,7 +128,7 @@ def opt_compare(language1, language2):
         query = """
 WITH
 translations AS (
-SELECT t0.title AS {2}_{0}, t1.title AS {2}_{1}, group_concat(p0.name) AS packages
+SELECT Count(*) AS count, t0.title AS {2}_{0}, t1.title AS {2}_{1}, group_concat(DISTINCT p0.name) AS packages
  FROM title_{0} AS t0
  INNER JOIN packages_{0} AS p0
  ON t0.id = p0.{2}_id
@@ -138,7 +138,7 @@ SELECT t0.title AS {2}_{0}, t1.title AS {2}_{1}, group_concat(p0.name) AS packag
  ON t1.id = p1.{2}_id
  GROUP BY t0.title, t1.title
 )
-SELECT t1.{2}_{0}, t1.{2}_{1}, packages
+SELECT t1.{2}_{0}, count, t1.{2}_{1}, packages
  FROM translations AS t1
  INNER JOIN (
  SELECT {2}_{0}
@@ -147,10 +147,10 @@ SELECT t1.{2}_{0}, t1.{2}_{1}, packages
  HAVING Count(*) > 1
  ) AS t0
  ON t1.{2}_{0} = t0.{2}_{0}
- ORDER BY t1.{2}_{0}, t1.{2}_{1}
+ ORDER BY t1.{2}_{0} COLLATE NOCASE, count DESC, t1.{2}_{1} COLLATE NOCASE
 """.format(language1, language2, field)
         filename = 'different-{2}-{0}-{1}.tsv'.format(language1, language2, field)
-        header = ('desc {}'.format(language1), 'desc {}'.format(language2), 'packages')
+        header = ('desc {}'.format(language1), 'count', 'desc {}'.format(language2), 'packages')
         query2csv(cursor, query, filename, header)
 
         query = """
