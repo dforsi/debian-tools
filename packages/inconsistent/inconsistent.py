@@ -194,7 +194,7 @@ SELECT Count(*) - Count(p1.descmd5) AS untranslated, Count(p1.descmd5) AS transl
     cursor.close()
     conn.close()
 
-def suggest_string(cursor, package, language1, language2):
+def suggest_short_desc(cursor, package, language1, language2):
     cursor.execute("""
 SELECT DISTINCT p0.name, ti.title, tr.title AS trailer
  FROM packages_{0} AS p0
@@ -216,7 +216,7 @@ def suggest_short(package, language1, language2):
     cursor = conn.cursor()
     cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
 
-    suggest_string(cursor, package, language1, language2)
+    suggest_short_desc(cursor, package, language1, language2)
     for row in cursor:
         yield row
 
