@@ -30,6 +30,7 @@ def usage():
     print('  --update LANGUAGE      updates the database with the given LANGUAGE')
 
 def query2csv(cursor, query, filename, header):
+    print(filename)
     cursor.execute(query)
     with open(filename, 'w') as f:
         writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
