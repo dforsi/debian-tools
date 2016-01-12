@@ -86,16 +86,27 @@ def opt_update(language):
 
 def compare_string(cursor, field, language1, language2):
     cursor.execute("""
-SELECT p0.name, Count(*) AS count, t.title
+WITH
+translations AS (
+SELECT Count(*) AS count, t1.title AS title_{1}, /*t0.title AS title_{0},*/ t0.id
+ FROM title_{1} AS t1
+ INNER JOIN packages_{1} AS p1
+ ON t1.id = p1.{2}_id
+ INNER JOIN packages_{0} AS p0
+ ON p0.descmd5 = p1.descmd5
+ INNER JOIN title_{0} AS t0
+ ON t0.id = p0.{2}_id
+ GROUP BY t1.title, t0.id
+)
+SELECT p0.name, count, t.title_{1}
  FROM packages_{0} AS p0
- INNER JOIN packages_{0} AS p1 ON p1.{2}_id = p0.{2}_id
- INNER JOIN packages_{1} AS p2 ON p2.descmd5 = p1.descmd5
- INNER JOIN title_{1} AS t ON t.id = p2.{2}_id
- WHERE p0.descmd5 not IN (
-  SELECT descmd5 FROM packages_{1}
- )
-GROUP BY p0.name, t.title
-ORDER BY p0.name, count DESC, t.title
+ INNER JOIN translations AS t
+ ON p0.{2}_id = t.id
+ LEFT JOIN packages_{1} AS p1
+ ON p0.descmd5 = p1.descmd5
+ WHERE p1.descmd5 IS NULL
+ GROUP BY p0.name, t.title_{1}
+ ORDER BY p0.name COLLATE NOCASE, count DESC, t.title_{1} COLLATE NOCASE
 """.format(language1, language2, field))
     for row in cursor:
         yield row
