@@ -85,33 +85,6 @@ def opt_update(language):
     conn.commit()
     conn.close()
 
-def suggest_field(cursor, field, language1, language2):
-    cursor.execute("""
-WITH
-translations AS (
-SELECT Count(*) AS count, t1.title AS title_{1}, /*t0.title AS title_{0},*/ t0.id
- FROM title_{1} AS t1
- INNER JOIN packages_{1} AS p1
- ON t1.id = p1.{2}_id
- INNER JOIN packages_{0} AS p0
- ON p0.descmd5 = p1.descmd5
- INNER JOIN title_{0} AS t0
- ON t0.id = p0.{2}_id
- GROUP BY t1.title, t0.id
-)
-SELECT p0.name, count, t.title_{1}
- FROM packages_{0} AS p0
- INNER JOIN translations AS t
- ON p0.{2}_id = t.id
- LEFT JOIN packages_{1} AS p1
- ON p0.descmd5 = p1.descmd5
- WHERE p1.descmd5 IS NULL
- GROUP BY p0.name, t.title_{1}
- ORDER BY p0.name COLLATE NOCASE, count DESC, t.title_{1} COLLATE NOCASE
-""".format(language1, language2, field))
-    for row in cursor:
-        yield row
-
 def opt_compare(language1, language2):
     database1 = database_fmt.format(language1)
     database2 = database_fmt.format(language2)
@@ -135,17 +108,45 @@ def opt_compare(language1, language2):
     header = ('paragraphs diff {}-{}'.format(language1, language2), 'package')
     query2csv(cursor, query, filename, header)
 
+    # List all suggestions for packages not yet translated
+
+    query = """
+WITH
+titles AS (
+SELECT DISTINCT t1.title AS title_{1}, p0.title_id
+ FROM title_{1} AS t1
+ INNER JOIN packages_{1} AS p1
+ ON t1.id = p1.title_id
+ INNER JOIN packages_{0} AS p0
+ ON p0.descmd5 = p1.descmd5
+/* WHERE p0.name LIKE ? */
+ GROUP BY t1.title, p0.title_id
+),
+trailers AS (
+SELECT DISTINCT t1.title AS trailer_{1}, p0.trailer_id
+ FROM title_{1} AS t1
+ INNER JOIN packages_{1} AS p1
+ ON t1.id = p1.trailer_id
+ INNER JOIN packages_{0} AS p0
+ ON p0.descmd5 = p1.descmd5
+/* WHERE p0.name LIKE ? */
+ GROUP BY t1.title, p0.trailer_id
+)
+SELECT p0.name, ti.count, ti.title_{1}, tr.count, tr.trailer_{1}
+ FROM packages_{0} AS p0
+ LEFT JOIN titles AS ti
+ ON ti.title_id = p0.title_id
+ LEFT JOIN trailers AS tr
+ ON tr.trailer_id = p0.trailer_id
+ WHERE NOT (ti.title_id IS NULL AND tr.trailer_id IS NULL) AND p0.descmd5 NOT IN (SELECT descmd5 FROM packages_{1})
+ GROUP BY p0.name, ti.title_{1}, tr.trailer_{1}
+ ORDER BY p0.name, ti.title_{1}, tr.trailer_{1}
+""".format(language1, language2)
+    filename = 'suggest-{0}-{1}.tsv'.format(language1, language2)
+    header = ('package', 'count', 'title', 'trailer')
+    query2csv(cursor, query, filename, header)
+
     for field in ['title', 'trailer']:
-
-        # List all suggestions for packages not yet translated
-
-        print('suggest-{2}-{0}.tsv'.format(language2, language1, field))
-        with open('suggest-{2}-{0}.tsv'.format(language2, language1, field), 'w') as f:
-            writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            writer.writerow(('package', 'count', field))
-            for row in suggest_field(cursor, field, language1, language2):
-                writer.writerow(row)
-
         # List all strings that are translated in more than one way
 
         query = """
