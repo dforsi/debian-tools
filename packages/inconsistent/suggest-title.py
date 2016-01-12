@@ -12,7 +12,7 @@ import csv
 import inconsistent
 
 if len(sys.argv) != 4:
-    print("Usage: {0} LANGUAGE input.csv output.csv".format(sys.argv[0]), file=sys.stderr)
+    print("Usage: {0} LANGUAGE INPUT-CSV OUTPUT-CSV".format(sys.argv[0]), file=sys.stderr)
     sys.exit(1)
 
 language1 = 'en'
