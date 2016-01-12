@@ -132,7 +132,11 @@ SELECT Count(*) AS count, t1.title AS trailer_{1}, p0.trailer_id
 /* WHERE p0.name LIKE ? */
  GROUP BY t1.title, p0.trailer_id
 )
-SELECT p0.name, Sum(ti.count), ti.title_{1}, Sum(tr.count), tr.trailer_{1}
+/*
+ WHEN p0.trailer_id IS NULL it means that the original string did not have a trailer, so return an empty string
+ WHEN tr.trailer_id IS NULL it means that a translation was not found, so return NULL
+ */
+SELECT p0.name, Sum(ti.count), ti.title_{1}, Sum(tr.count), CASE WHEN p0.trailer_id IS NULL THEN '' ELSE tr.trailer_{1} END
  FROM packages_{0} AS p0
  LEFT JOIN titles AS ti
  ON ti.title_id = p0.title_id
