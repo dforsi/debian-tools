@@ -23,12 +23,13 @@ output = sys.argv[3]
 with open(input, 'r') as infile, open(output, 'w') as outfile:
     reader = csv.reader(infile)
     writer = csv.writer(outfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    first = True
+    title_column = None
     for row in reader:
-        if first:
-            row.append('TITLE')
+        if title_column == None:
+            if 'TITLE' not in row:
+                row.append('TITLE')
+            title_column = row.index('TITLE')
             writer.writerow(row)
-            first = False
             continue
         package = row[0]
         title = []
@@ -42,5 +43,8 @@ with open(input, 'r') as infile, open(output, 'w') as outfile:
                 else:
                     if sugg[2]:
                         title.append('<trans>' + ' -- ' + sugg[2])
-        row.append('\n'.join(title))
+        try:
+            row[title_column] = '\n'.join(title)
+        except IndexError:
+            row.append('\n'.join(title))
         writer.writerow(row)
