@@ -138,6 +138,7 @@ def opt_compare(language1, language2):
 
         # List all suggestions for packages not yet translated
 
+        print('suggest-{2}-{0}.tsv'.format(language2, language1, field))
         with open('suggest-{2}-{0}.tsv'.format(language2, language1, field), 'w') as f:
             writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(('package', 'count', field))
