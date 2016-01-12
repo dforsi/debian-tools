@@ -113,7 +113,7 @@ def opt_compare(language1, language2):
     query = """
 WITH
 titles AS (
-SELECT DISTINCT t1.title AS title_{1}, p0.title_id
+SELECT Count(*) AS count, t1.title AS title_{1}, p0.title_id
  FROM title_{1} AS t1
  INNER JOIN packages_{1} AS p1
  ON t1.id = p1.title_id
@@ -123,7 +123,7 @@ SELECT DISTINCT t1.title AS title_{1}, p0.title_id
  GROUP BY t1.title, p0.title_id
 ),
 trailers AS (
-SELECT DISTINCT t1.title AS trailer_{1}, p0.trailer_id
+SELECT Count(*) AS count, t1.title AS trailer_{1}, p0.trailer_id
  FROM title_{1} AS t1
  INNER JOIN packages_{1} AS p1
  ON t1.id = p1.trailer_id
@@ -132,7 +132,7 @@ SELECT DISTINCT t1.title AS trailer_{1}, p0.trailer_id
 /* WHERE p0.name LIKE ? */
  GROUP BY t1.title, p0.trailer_id
 )
-SELECT p0.name, ti.count, ti.title_{1}, tr.count, tr.trailer_{1}
+SELECT p0.name, Sum(ti.count), ti.title_{1}, Sum(tr.count), tr.trailer_{1}
  FROM packages_{0} AS p0
  LEFT JOIN titles AS ti
  ON ti.title_id = p0.title_id
@@ -143,7 +143,7 @@ SELECT p0.name, ti.count, ti.title_{1}, tr.count, tr.trailer_{1}
  ORDER BY p0.name, ti.title_{1}, tr.trailer_{1}
 """.format(language1, language2)
     filename = 'suggest-{0}-{1}.tsv'.format(language1, language2)
-    header = ('package', 'count', 'title', 'trailer')
+    header = ('package', 'title count', 'title', 'trailer count', 'trailer')
     query2csv(cursor, query, filename, header)
 
     for field in ['title', 'trailer']:
