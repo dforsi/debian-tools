@@ -1,50 +1,44 @@
 #!/usr/bin/env python3
 
-# Daniele Forsi 04/01/2016 CC0
+# Daniele Forsi 12/01/2016 CC0
 
-# Suggests titles for untranslated packages
+# Reads suggested titles read from a CSV file created by inconsistent.py (suggest-en-it.tsv)
+# and merges them with a CSV file created by ddtp-checker.py (outputfile.csv)
 
-# Typical usage:
-# ./suggest-title.py it input.csv output.csv
+# Usage: ./asuggest-title.py outputfile.csv suggest-en-it.tsv new_output.csv 
 
 import sys
 import csv
-import inconsistent
 
 if len(sys.argv) != 4:
-    print("Usage: {0} LANGUAGE INPUT-CSV OUTPUT-CSV".format(sys.argv[0]), file=sys.stderr)
+    print("Usage: {0} BASE-CSV TRANSLATIONS-CSV OUTPUT-CSV".format(sys.argv[0]), file=sys.stderr)
     sys.exit(1)
 
-language1 = 'en'
-language2 = sys.argv[1]
-input = sys.argv[2]
+base = sys.argv[1]
+translations = sys.argv[2]
 output = sys.argv[3]
 
-with open(input, 'r') as infile, open(output, 'w') as outfile:
-    reader = csv.reader(infile)
-    writer = csv.writer(outfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-    title_column = None
-    for row in reader:
-        if title_column == None:
-            if 'TITLE' not in row:
-                row.append('TITLE')
-            title_column = row.index('TITLE')
-            writer.writerow(row)
-            continue
-        package = row[0]
-        title = []
-        if row[0] != 'Translated':
-            for sugg in inconsistent.suggest_short(package, language1, language2):
-                if sugg[1]:
-                    if sugg[2]:
-                        title.append(sugg[1] + ' -- ' + sugg[2])
-                    else:
-                        title.append(sugg[1])
-                else:
-                    if sugg[2]:
-                        title.append('<trans>' + ' -- ' + sugg[2])
+index = {}
+with open(translations, 'r') as trans_file, open(base, 'r') as base_file, open(output, 'w') as out_file:
+    no_suggestions = ''
+    for row in csv.reader(trans_file, delimiter='\t'):
+        if row[2]:
+            title = row[2]
+        else:
+            title = '<trans>'
+        if row[4]:
+            title += ' - ' + row[4]
         try:
-            row[title_column] = '\n'.join(title)
-        except IndexError:
-            row.append('\n'.join(title))
-        writer.writerow(row)
+            index[row[0]] = index[row[0]] + '\n' + title
+        except KeyError:
+            index[row[0]] = title
+    index['NAME'] = 'TITLE'
+
+    writer = csv.writer(out_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+    for row in csv.reader(base_file, delimiter=','):
+        try:
+            title = index[row[0]]
+        except KeyError:
+            title = no_suggestions
+        writer.writerow(row + [title])
