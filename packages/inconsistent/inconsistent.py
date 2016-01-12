@@ -84,7 +84,7 @@ def opt_update(language):
     conn.commit()
     conn.close()
 
-def compare_string(cursor, field, language1, language2):
+def suggest_field(cursor, field, language1, language2):
     cursor.execute("""
 WITH
 translations AS (
@@ -141,7 +141,7 @@ def opt_compare(language1, language2):
         with open('suggest-{2}-{0}.tsv'.format(language2, language1, field), 'w') as f:
             writer = csv.writer(f, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
             writer.writerow(('package', 'count', field))
-            for row in compare_string(cursor, field, language1, language2):
+            for row in suggest_field(cursor, field, language1, language2):
                 writer.writerow(row)
 
         # List all strings that are translated in more than one way
