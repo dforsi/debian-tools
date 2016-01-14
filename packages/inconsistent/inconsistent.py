@@ -62,6 +62,7 @@ def opt_update(language):
         for package in get_package(f):
             title = package[description].split('\n')[0]
             parts = re.split(" (\[)(.*)\]$| (\()((?!.*\)[^)]).*)\)|(?: (--|- -|-)|(:|;)) (.+[^])])$", title)
+            parts = [x for x in parts if x]
             if len(parts) == 3:
                 #print(parts[0], parts[2])
                 trailer_id = add_title(cursor, language, parts[2])
