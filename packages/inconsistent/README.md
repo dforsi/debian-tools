@@ -8,7 +8,7 @@ Tools to find inconsistencies in the descriptions of Debian packages, by Daniele
 Usage: ./inconsistent.py COMMAND ARGUMENT(S)
   --compare LANGUAGE1 LANGUAGE2  compares LANGUAGE1 and LANGUAGE2
   --suggest-short LANGUAGE PACKAGE  suggests a short description for PACKAGE in LANGUAGE
-  --summary LANGUAGE1 LANGUAGE2  prints differences between LANGUAGE1 and LANGUAGE2
+  --summary LANGUAGE...  prints stats about each specified LANGUAGE
   --update LANGUAGE      updates the database with the given LANGUAGE
 ```
 
@@ -31,20 +31,18 @@ You can also import individual debian/control files or files that in a running D
 
 ### Get some stats about databases
 
-Usage: ./inconsistent.py  --summary LANGUAGE1 LANGUAGE2
+Usage: ./inconsistent.py  --summary LANGUAGE...
 Do not use untrusted input for the LANGUAGE argument.
 
 For a quick test of your databases, try this:
 
 ```
-$ ./inconsistent.py --summary en it
-
-what        en      it
-count      50330   36546
-not in en      0      32
-not in it  13812       0
-titles     35281   26033
-trailers    4969    4204
+$ ./inconsistent.py --summary en
+language	en
+count	50507
+not in en	0
+titles	35362
+trailers	5039
 ```
 
 ### Get suggestions

@@ -9,10 +9,6 @@
 # ./inconsistent.py --update en # imports Translation-en into inconsistent-en.sqlite3
 # ./inconsistent.py --update it # imports Translation-it into inconsistent-it.sqlite3
 # ./inconsistent.py --summary en it
-# If you import only one language, some commands still work (but then
-# comparisons aren't meaningful) if you pass the same language twice,
-# eg.:
-# ./inconsistent.py --summary en en
 
 import sys
 import sqlite3
@@ -278,45 +274,44 @@ def opt_suggest_short(package, language1, language2):
         trailer = add_separator(row[2], row[3])
         writer.writerow((row[0], title + trailer))
 
-def opt_summary(language1, language2):
+def opt_summary(languages):
+    language1 = languages[0]
     database1 = database_fmt.format(language1)
-    database2 = database_fmt.format(language2)
 
     conn = sqlite3.connect(database1)
     cursor = conn.cursor()
-    cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
 
-    summary = [['what', language1, language2]]
+    not_in = 'not in {}'.format(language1)
+    rows = ['count', not_in, 'titles', 'trailers']
+    results = {}
+    for row in rows:
+        results[row] = {}
+    for language in languages:
+        database2 = database_fmt.format(language)
+        cursor.execute("ATTACH DATABASE '{0}' AS db2".format(database2))
 
-    # count all packages
-    results = ['count']
-    for language in (language1, language2):
+         # count all packages
         cursor.execute("SELECT Count(*) FROM packages_{0}".format(language))
-        results.append(cursor.fetchall()[0][0])
-    summary.append(results)
+        results['count'][language] = cursor.fetchall()[0][0]
 
-    # count missing packages
-    cursor.execute("SELECT Count(*) FROM packages_{0} WHERE descmd5 NOT IN (SELECT descmd5 FROM packages_{1})".format(language2, language1))
-    summary.append(['not in {1}'.format(language2, language1), 0, cursor.fetchall()[0][0]])
-    cursor.execute("SELECT Count(*) FROM packages_{0} WHERE descmd5 NOT IN (SELECT descmd5 FROM packages_{1})".format(language1, language2))
-    summary.append(['not in {1}'.format(language1, language2), cursor.fetchall()[0][0], 0])
+        # count missing packages
+        cursor.execute("SELECT Count(*) FROM packages_{0} WHERE descmd5 NOT IN (SELECT descmd5 FROM packages_{1})".format(language, language1))
+        results[not_in][language] = cursor.fetchall()[0][0]
 
-    # count distinct titles
-    results = ['titles']
-    for language in (language1, language2):
+         # count distinct titles
         cursor.execute("SELECT Count(DISTINCT title_id) FROM packages_{0}".format(language))
-        results.append(cursor.fetchall()[0][0])
-    summary.append(results)
+        results['titles'][language] = cursor.fetchall()[0][0]
 
-    # count distinct trailers
-    results = ['trailers']
-    for language in (language1, language2):
+        # count distinct trailers
         cursor.execute("SELECT Count(DISTINCT trailer_id) FROM packages_{0}".format(language))
-        results.append(cursor.fetchall()[0][0])
-    summary.append(results)
+        results['trailers'][language] = cursor.fetchall()[0][0]
 
-    for row in summary:
-        print("\t".join(str(x) for x in row))
+        cursor.execute("DETACH DATABASE db2")
+
+    header = ['language'] + languages
+    print("\t".join(header))
+    for row in rows:
+        print("\t".join([row] + [str(results[row][x]) for x in languages]))
 
     cursor.close()
     conn.close()
@@ -347,10 +342,9 @@ def main():
         language2 = sys.argv[2]
         package = sys.argv[3]
         opt_suggest_short(package, language1, language2)
-    elif len(sys.argv) == 4 and sys.argv[1] == '--summary':
-        language1 = sys.argv[2]
-        language2 = sys.argv[3]
-        opt_summary(language1, language2)
+    elif len(sys.argv) >= 3 and sys.argv[1] == '--summary':
+        languages = sys.argv[2:]
+        opt_summary(languages)
     elif len(sys.argv) == 3 and sys.argv[1] == '--update':
         language = sys.argv[2]
         opt_update(language)
