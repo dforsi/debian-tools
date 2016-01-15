@@ -90,11 +90,14 @@ def opt_update(language):
                 separator = None
                 trailer_id = None
             paragraphs = 1 + package[description].count('\n.\n')
-            cursor.execute("INSERT INTO packages_{0} (name, paragraphs, descmd5, title_id, separator, trailer_id) VALUES (?, ?, ?, ?, ?, ?)".format(language), (package['Package'], paragraphs, package['Description-md5'], title_id, separator, trailer_id))
+            cursor.execute("INSERT OR REPLACE INTO packages_{0} (name, paragraphs, descmd5, title_id, separator, trailer_id) VALUES (?, ?, ?, ?, ?, ?)".format(language), (package['Package'], paragraphs, package['Description-md5'], title_id, separator, trailer_id))
 
-    cursor.execute("CREATE INDEX IF NOT EXISTS idx_packages_{0} ON packages_{0} (descmd5)".format(language))
+    cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_packages_{0} ON packages_{0} (name, descmd5)".format(language))
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_title_id_{0} ON packages_{0} (title_id)".format(language))
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_trailer_id_{0} ON packages_{0} (trailer_id)".format(language))
+
+    cursor.execute("DELETE FROM title_{0} WHERE id NOT IN (SELECT title_id FROM packages_{0}) AND id NOT IN (SELECT trailer_id FROM packages_{0})".format(language))
+    cursor.execute("VACUUM")
 
     cursor.execute("ANALYZE")
     cursor.close()

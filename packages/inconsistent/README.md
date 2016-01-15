@@ -93,3 +93,7 @@ The files "suggest-title-it.tsv" and "suggest-trailer-it.tsv" contain all sugges
 # suggest-title
 
 suggest-title.py is a script that given an input file in comma separated format, with package names in the first column, copies it to an output file appending a column with all suggestions that could be found for each packege (this can take tens of minutes).
+
+## Bugs
+
+The packages that were removed from Debian aren't removed from the databases by the --update command (only unused titles are deleted). Currently this is done to avoid loosing existing translations for packages under revision. To work around this bug you can periodically delete the databases (the English database canm be deleted each time).
