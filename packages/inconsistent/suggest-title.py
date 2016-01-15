@@ -2,10 +2,10 @@
 
 # Daniele Forsi 12/01/2016 CC0
 
-# Reads suggested titles read from a CSV file created by inconsistent.py (suggest-en-it.tsv)
+# Reads suggested titles from a CSV file created by inconsistent.py (suggest-en-it.tsv)
 # and merges them with a CSV file created by ddtp-checker.py (outputfile.csv)
 
-# Usage: ./asuggest-title.py outputfile.csv suggest-en-it.tsv new_output.csv 
+# Usage: ./suggest-title.py outputfile.csv suggest-en-it.tsv new_output.csv
 
 import sys
 import csv
