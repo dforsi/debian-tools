@@ -53,7 +53,7 @@ def opt_update(language):
     conn = sqlite3.connect(database)
     cursor = conn.cursor()
 
-    cursor.execute("CREATE TABLE IF NOT EXISTS packages_{0} (name STRING, paragraphs INTEGER, descmd5 STRING, title_id INTEGER, trailer_id INTEGER)".format(language))
+    cursor.execute("CREATE TABLE IF NOT EXISTS packages_{0} (name STRING, paragraphs INTEGER, descmd5 STRING, title_id INTEGER, separator STRING, trailer_id INTEGER)".format(language))
     cursor.execute("CREATE TABLE IF NOT EXISTS title_{0} (id INTEGER PRIMARY KEY, title STRING)".format(language))
     cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_title_{0} ON title_{0} (title)".format(language))
 
@@ -64,16 +64,15 @@ def opt_update(language):
             parts = re.split(" (\[)(.*)\]$| (\()((?!.*\)[^)]).*)\)|(?: (--|- -|-)|(:|;)) (.+[^])])$", title)
             parts = [x for x in parts if x]
             if len(parts) == 3:
-                #print(parts[0], parts[2])
+                title_id = add_title(cursor, language, parts[0])
+                separator = parts[1]
                 trailer_id = add_title(cursor, language, parts[2])
             else:
-                #print(parts[0])
-                # an empty trailer is acceptable but and empty string would match
-                # lots of unrelated packages slowing queries down to a crawl
+                title_id = add_title(cursor, language, title)
+                separator = None
                 trailer_id = None
-            title_id = add_title(cursor, language, parts[0])
             paragraphs = 1 + package[description].count('\n.\n')
-            cursor.execute("INSERT INTO packages_{0} (name, paragraphs, descmd5, title_id, trailer_id) VALUES (?, ?, ?, ?, ?)".format(language), (package['Package'], paragraphs, package['Description-md5'], title_id, trailer_id))
+            cursor.execute("INSERT INTO packages_{0} (name, paragraphs, descmd5, title_id, separator, trailer_id) VALUES (?, ?, ?, ?, ?, ?)".format(language), (package['Package'], paragraphs, package['Description-md5'], title_id, separator, trailer_id))
 
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_packages_{0} ON packages_{0} (descmd5)".format(language))
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_title_id_{0} ON packages_{0} (title_id)".format(language))
