@@ -282,7 +282,7 @@ def opt_summary(languages):
     cursor = conn.cursor()
 
     not_in = 'not in {}'.format(language1)
-    rows = ['count', not_in, 'titles', 'trailers']
+    rows = ['count', not_in, 'titles', 'trailers', 'duplicates']
     results = {}
     for row in rows:
         results[row] = {}
@@ -305,6 +305,10 @@ def opt_summary(languages):
         # count distinct trailers
         cursor.execute("SELECT Count(DISTINCT trailer_id) FROM packages_{0}".format(language))
         results['trailers'][language] = cursor.fetchall()[0][0]
+
+         # count duplicated package names
+        cursor.execute("SELECT Count(*) - Count(DISTINCT name) FROM packages_{0}".format(language))
+        results['duplicates'][language] = cursor.fetchall()[0][0]
 
         cursor.execute("DETACH DATABASE db2")
 
