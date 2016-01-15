@@ -46,6 +46,24 @@ def add_title(cursor, language, title):
         cursor.execute("SELECT id FROM title_{0} WHERE title = ?".format(language), (title,))
         return cursor.fetchone()[0]
 
+def add_separator(trailer, separator):
+    if trailer:
+        if separator == '(':
+            pre = ' ('
+            post = ')'
+        elif separator == '[':
+            pre = ' ['
+            post = ']'
+        elif separator in (':', ';'):
+            pre = separator + ' '
+            post = ''
+        else:
+            pre = ' ' + separator + ' '
+            post = ''
+        return pre + trailer + post
+    else:
+        return ''
+
 def opt_update(language):
     database = database_fmt.format(language)
     datafile = datafile_fmt.format(language)
@@ -202,7 +220,7 @@ SELECT Count(*) - Count(p1.descmd5) AS untranslated, Count(p1.descmd5) AS transl
 
 def suggest_short_desc(cursor, package, language1, language2):
     cursor.execute("""
-SELECT DISTINCT p0.name, ti.title, tr.title AS trailer
+SELECT DISTINCT p0.name, ti.title, tr.title AS trailer, p0.separator
  FROM packages_{0} AS p0
  LEFT JOIN packages_{0} AS p1 ON p1.title_id = p0.title_id AND p1.rowid <> p0.rowid
  LEFT JOIN packages_{0} AS p2 ON p2.trailer_id = p0.trailer_id AND p2.rowid <> p0.rowid
@@ -232,7 +250,8 @@ def suggest_short(package, language1, language2):
 def opt_suggest_short(package, language1, language2):
     writer = csv.writer(sys.stdout, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     for row in suggest_short(package, language1, language2):
-        writer.writerow(row)
+        trailer = add_separator(row[2], row[3])
+        writer.writerow((row[0], row[1] + trailer))
 
 def opt_summary(language1, language2):
     database1 = database_fmt.format(language1)
