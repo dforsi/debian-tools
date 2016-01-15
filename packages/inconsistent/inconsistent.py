@@ -223,17 +223,36 @@ SELECT Count(*) - Count(p1.descmd5) AS untranslated, Count(p1.descmd5) AS transl
 
 def suggest_short_desc(cursor, package, language1, language2):
     cursor.execute("""
-SELECT DISTINCT p0.name, ti.title, tr.title AS trailer, p0.separator
+WITH
+titles AS (
+SELECT DISTINCT t1.title AS title_{1}, p0.title_id
+ FROM title_{1} AS t1
+ INNER JOIN packages_{1} AS p1
+ ON t1.id = p1.title_id
+ INNER JOIN packages_{0} AS p0
+ ON p0.descmd5 = p1.descmd5
+ WHERE p0.name LIKE ?
+ GROUP BY t1.title, p0.title_id
+),
+trailers AS (
+SELECT DISTINCT t1.title AS trailer_{1}, p0.trailer_id
+ FROM title_{1} AS t1
+ INNER JOIN packages_{1} AS p1
+ ON t1.id = p1.trailer_id
+ INNER JOIN packages_{0} AS p0
+ ON p0.descmd5 = p1.descmd5
+ WHERE p0.name LIKE ?
+ GROUP BY t1.title, p0.trailer_id
+)
+SELECT DISTINCT p0.name, ti.title_{1}, tr.trailer_{1}, p0.separator
  FROM packages_{0} AS p0
- LEFT JOIN packages_{0} AS p1 ON p1.title_id = p0.title_id AND p1.rowid <> p0.rowid
- LEFT JOIN packages_{0} AS p2 ON p2.trailer_id = p0.trailer_id AND p2.rowid <> p0.rowid
- INNER JOIN packages_{1} AS p3 ON p3.descmd5 = p1.descmd5
- INNER JOIN packages_{1} AS p4 ON p4.descmd5 = p2.descmd5
- LEFT JOIN title_{1} AS ti ON ti.id = p3.title_id
- LEFT JOIN title_{1} AS tr ON tr.id = p4.trailer_id
- WHERE NOT (p3.title_id IS NULL AND p4.trailer_id IS NULL) AND p0.name LIKE ?
- ORDER BY p0.name, ti.title, tr.title
-""".format(language1, language2), (package, ))
+ LEFT JOIN titles AS ti
+ ON ti.title_id = p0.title_id
+ LEFT JOIN trailers AS tr
+ ON tr.trailer_id = p0.trailer_id
+ WHERE p0.name LIKE ? AND (ti.title_{1} IS NOT NULL OR tr.trailer_{1} IS NOT NULL) AND p0.descmd5 NOT IN (SELECT descmd5 FROM packages_{1})
+ ORDER BY p0.name, ti.title_{1}, tr.trailer_{1}
+""".format(language1, language2), (package, package, package))
 
 def suggest_short(package, language1, language2):
     database1 = database_fmt.format(language1)
@@ -252,9 +271,12 @@ def suggest_short(package, language1, language2):
 
 def opt_suggest_short(package, language1, language2):
     writer = csv.writer(sys.stdout, delimiter='\t', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+    header = ('package', 'title')
+    writer.writerow(header)
     for row in suggest_short(package, language1, language2):
+        title = row[1] or '<trans>'
         trailer = add_separator(row[2], row[3])
-        writer.writerow((row[0], row[1] + trailer))
+        writer.writerow((row[0], title + trailer))
 
 def opt_summary(language1, language2):
     database1 = database_fmt.format(language1)
