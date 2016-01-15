@@ -58,7 +58,7 @@ def add_separator(trailer, separator):
             pre = separator + ' '
             post = ''
         else:
-            pre = ' ' + separator + ' '
+            pre = ' ' + str(separator) + ' '
             post = ''
         return pre + trailer + post
     else:
