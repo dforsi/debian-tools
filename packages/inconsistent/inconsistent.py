@@ -251,7 +251,7 @@ SELECT DISTINCT p0.name, ti.title_{1}, tr.trailer_{1}, p0.separator
  LEFT JOIN trailers AS tr
  ON tr.trailer_id = p0.trailer_id
  WHERE p0.name LIKE ? AND (ti.title_{1} IS NOT NULL OR tr.trailer_{1} IS NOT NULL) AND p0.descmd5 NOT IN (SELECT descmd5 FROM packages_{1})
- ORDER BY p0.name, ti.title_{1}, tr.trailer_{1}
+ ORDER BY p0.name, ti.title_{1} COLLATE NOCASE, tr.trailer_{1} COLLATE NOCASE
 """.format(language1, language2), (package, package, package))
 
 def suggest_short(package, language1, language2):
