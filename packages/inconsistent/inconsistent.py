@@ -74,17 +74,19 @@ def opt_update(language):
     with open(datafile) as f:
         description ='Description-{0}'.format(language)
         for package in get_package(f):
-            title = package[description].split('\n')[0]
-            parts = re.split(" (\[)(.*)\]$| (\()((?!.*\)[^)]).*)\)|(?: (--|- -|-)|(:|;)) (.+[^])])$", title)
+            short_description = package[description].split('\n')[0]
+            parts = re.split(" (\[)(.*)\]$| (\()((?!.*\)[^)]).*)\)|(?: (--|- -|-)|(:|;)) (.+[^])])$", short_description)
             parts = [x for x in parts if x]
             if len(parts) == 3:
-                title_id = add_title(cursor, language, parts[0])
+                title = parts[0]
                 separator = parts[1]
-                trailer_id = add_title(cursor, language, parts[2])
+                trailer = parts[2]
+                trailer_id = add_title(cursor, language, trailer)
             else:
-                title_id = add_title(cursor, language, title)
+                title = short_description
                 separator = None
                 trailer_id = None
+            title_id = add_title(cursor, language, title)
             paragraphs = 1 + package[description].count('\n.\n')
             cursor.execute("INSERT OR REPLACE INTO packages_{0} (name, paragraphs, descmd5, title_id, separator, trailer_id) VALUES (?, ?, ?, ?, ?, ?)".format(language), (package['Package'], paragraphs, package['Description-md5'], title_id, separator, trailer_id))
 
