@@ -43,22 +43,30 @@ def add_title(cursor, language, title):
         return cursor.fetchone()[0]
 
 def add_separator(trailer, separator):
-    if trailer:
-        if separator == '(':
-            pre = ' ('
-            post = ')'
-        elif separator == '[':
-            pre = ' ['
-            post = ']'
-        elif separator in (':', ';'):
-            pre = separator + ' '
-            post = ''
-        else:
-            pre = ' ' + str(separator) + ' '
-            post = ''
-        return pre + trailer + post
-    else:
+    if trailer == '':
+        # no trailer in original description
         return ''
+    elif trailer == None:
+        # no translation found
+        trailer = '<trans>'
+
+    if separator == '(':
+        pre = ' ('
+        post = ')'
+    elif separator == '[':
+        pre = ' ['
+        post = ']'
+    elif separator in (':', ';'):
+        pre = separator + ' '
+        post = ''
+    elif separator:
+        pre = ' ' + separator + ' '
+        post = ''
+    else:
+        pre = ' '
+        post = ''
+
+    return pre + trailer + post
 
 def opt_update(language):
     database = database_fmt.format(language)
@@ -85,6 +93,8 @@ def opt_update(language):
             else:
                 title = short_description
                 separator = None
+                # an empty trailer is acceptable but and empty string would match
+                # lots of unrelated packages slowing queries down to a crawl
                 trailer_id = None
             title_id = add_title(cursor, language, title)
             paragraphs = 1 + package[description].count('\n.\n')
@@ -242,7 +252,11 @@ SELECT DISTINCT t1.title AS trailer_{1}, p0.trailer_id
  WHERE p0.name LIKE ?
  GROUP BY t1.title, p0.trailer_id
 )
-SELECT DISTINCT p0.name, ti.title_{1}, tr.trailer_{1}, p0.separator
+/*
+ WHEN p0.trailer_id IS NULL it means that the original string did not have a trailer, so return an empty string
+ WHEN tr.trailer_id IS NULL it means that a translation was not found, so return NULL
+ */
+SELECT DISTINCT p0.name, ti.title_{1}, CASE WHEN p0.trailer_id IS NULL THEN '' ELSE tr.trailer_{1} END, p0.separator
  FROM packages_{0} AS p0
  LEFT JOIN titles AS ti
  ON ti.title_id = p0.title_id
