@@ -203,7 +203,12 @@ SELECT t1.{2}_{0}, count, t1.{2}_{1}, packages
  HAVING Count(*) > 1
  ) AS t0
  ON t1.{2}_{0} = t0.{2}_{0}
- ORDER BY t1.{2}_{0} COLLATE NOCASE, count DESC, t1.{2}_{1} COLLATE NOCASE
+ /*
+  First case insensitive order, then case sensitive so that translations are kept close to their
+  respective originals that differ only for case (eg. all translations for "Core" then all those
+  for "core")
+ */
+ ORDER BY t1.{2}_{0} COLLATE NOCASE, t1.{2}_{0}, count DESC, t1.{2}_{1} COLLATE NOCASE, t1.{2}_{1}
 """.format(language1, language2, field)
         filename = 'different-{2}-{0}-{1}.tsv'.format(language1, language2, field)
         header = ('desc {}'.format(language1), 'count', 'desc {}'.format(language2), 'packages')
