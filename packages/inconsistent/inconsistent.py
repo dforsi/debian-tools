@@ -244,7 +244,6 @@ SELECT DISTINCT t1.title AS title_{1}, p0.title_id
  ON t1.id = p1.title_id
  INNER JOIN packages_{0} AS p0
  ON p0.descmd5 = p1.descmd5
- WHERE p0.name LIKE ?
  GROUP BY t1.title, p0.title_id
 ),
 trailers AS (
@@ -254,7 +253,6 @@ SELECT DISTINCT t1.title AS trailer_{1}, p0.trailer_id
  ON t1.id = p1.trailer_id
  INNER JOIN packages_{0} AS p0
  ON p0.descmd5 = p1.descmd5
- WHERE p0.name LIKE ?
  GROUP BY t1.title, p0.trailer_id
 )
 /*
@@ -269,7 +267,7 @@ SELECT DISTINCT p0.name, ti.title_{1}, CASE WHEN p0.trailer_id IS NULL THEN '' E
  ON tr.trailer_id = p0.trailer_id
  WHERE p0.name LIKE ? AND (ti.title_{1} IS NOT NULL OR tr.trailer_{1} IS NOT NULL) AND p0.descmd5 NOT IN (SELECT descmd5 FROM packages_{1})
  ORDER BY p0.name, ti.title_{1} COLLATE NOCASE, tr.trailer_{1} COLLATE NOCASE
-""".format(language1, language2), (package, package, package))
+""".format(language1, language2), (package, ))
 
 def suggest_short(package, language1, language2):
     database1 = database_fmt.format(language1)
