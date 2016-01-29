@@ -54,3 +54,9 @@ var iframe = document.getElementsByTagName('iframe');
 if (iframe[0]) {
   iframe[0].src = iframe[0].src.replace("http:", "")
 }
+
+// Convert timestamps into dates
+// Obtain the <pre> tag containing the log
+var log_tag = document.getElementsByTagName('pre')[1];
+// Replace each timestamp
+log_tag.innerHTML = log_tag.innerHTML.replace(/\d{10}/g, function (timestamp) {var date = new Date(1000*timestamp); return date.toLocaleString();});
