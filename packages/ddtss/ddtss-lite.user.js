@@ -57,7 +57,13 @@ if (iframe[0]) {
 }
 
 // Convert timestamps into dates
-// Obtain the <pre> tag containing the log
-var log_tag = document.getElementsByTagName('pre')[1];
-// Replace each timestamp
-log_tag.innerHTML = log_tag.innerHTML.replace(/\d{10}/g, function (timestamp) {var date = new Date(1000*timestamp); return date.toLocaleString();});
+// Obtain all <pre> tags
+var all_log_tags = document.getElementsByTagName('pre');
+// Find the one containing logs
+for (n in all_log_tags) {
+  log_tag = all_log_tags[n];
+  if (log_tag.innerHTML.search(/\d{10} fetched/) != -1) {
+    // Convert timestamps
+    log_tag.innerHTML = log_tag.innerHTML.replace(/\d{10}/g, function (timestamp) {var date = new Date(1000*timestamp); return date.toLocaleString();});
+  }
+}
