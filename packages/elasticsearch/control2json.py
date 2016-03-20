@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Daniele Forsi 20/12/2015 CC0
+# Daniele Forsi 20/03/2016 CC0
 
 # Import the full content of a Translation-XX file
 # in a local instance of Elasticsearch.
@@ -8,13 +8,14 @@
 # so it doesn't work with a single debian/control file.
 
 # Usage:
-# ./control2json.py | curl -s -XPOST localhost:9200//debian/packages/_bulk --data-binary @/dev/stdin >/dev/null
+# ./control2json.py Translation-it | curl -s -XPOST localhost:9200//debian/packages/_bulk --data-binary @/dev/stdin >/dev/null
 # Quick check:
 # curl -XGET 'localhost:9200/debian/packages/_count?pretty'
 
+import sys
 import json
 
-filename = "Translation-it"
+filename = sys.argv[1]
 
 index = json.dumps({"index": {}})
 with open(filename) as f:
