@@ -47,3 +47,5 @@ with open(filename) as f:
         index(f)
     elif action == "update":
         update(f)
+    else:
+        raise ValueError("Unexpected argument: " + action)
