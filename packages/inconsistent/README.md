@@ -20,6 +20,7 @@ First you need some data to import, for example
 DIST=sid
 for LNG in en it; do
  wget --timestamping http://ftp.debian.org/debian/dists/$DIST/main/i18n/Translation-$LNG.bz2
+ bunzip2 Translation-$LNG.bz2
  ./inconsistent.py --update $LNG
 done
 ```
@@ -31,7 +32,7 @@ You can also import individual debian/control files or files that in a running D
 
 ### Get some stats about databases
 
-Usage: ./inconsistent.py  --summary LANGUAGE...
+Usage: ./inconsistent.py --summary LANGUAGE...
 Do not use untrusted input for the LANGUAGE argument.
 
 For a quick test of your databases, try this:
