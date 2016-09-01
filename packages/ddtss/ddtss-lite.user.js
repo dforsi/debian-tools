@@ -2,8 +2,8 @@
 // @name DDTSS Helper
 // @description Add stuff to DDTSS pages
 // @version 0.6
-// @match https://ddtp.debian.net/ddtss/index.cgi/*/forreview/*
-// @match https://ddtp.debian.net/ddtss/index.cgi/*/translate/*
+// @match https://ddtp2.debian.net/ddtss/index.cgi/*/forreview/*
+// @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
 // ==/UserScript==
 // Daniele Forsi
