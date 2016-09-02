@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name DDTSS Helper
 // @description Add stuff to DDTSS pages
-// @version 0.6
+// @version 0.6.1
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
