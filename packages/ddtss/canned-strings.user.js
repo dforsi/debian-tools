@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name Canned strings for DDTSS
 // @description Add prepared phrases for comments
-// @version 0.4
+// @version 0.4.1
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
