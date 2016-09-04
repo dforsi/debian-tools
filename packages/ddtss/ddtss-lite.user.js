@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name DDTSS Helper
 // @description Add stuff to DDTSS pages
-// @version 0.6.1
+// @version 0.6.2
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
@@ -42,12 +42,12 @@ if (ul_el[0]) {
   var el = ul_el[0].children[0].children[0];
   var html = el.innerHTML;
   var re = /([^.]+.: )([^ ,]+)(.*)/;
-  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/source/sid/$2" target="_blank">$2</a> <a href="https://ddtp.debian.net/ddt.cgi?source=$2" target="_blank">ddtp</a>$3');
+  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/source/sid/$2" target="_blank">$2</a> <a href="https://ddtp2.debian.net/ddt.cgi?source=$2" target="_blank">ddtp</a>$3');
 
   var el = ul_el[0].children[1].children[0];
   var html = el.innerHTML;
   var re = /([^.]+.: )([^ ,]+)(.*)/;
-  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/sid/$2" target="_blank">$2</a> <a href="https://ddtp.debian.net/ddt.cgi?package=$2" target="_blank">ddtp</a>$3');
+  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/sid/$2" target="_blank">$2</a> <a href="https://ddtp2.debian.net/ddt.cgi?package=$2" target="_blank">ddtp</a>$3');
 }
 
 // Convert timestamps into dates
