@@ -36,18 +36,18 @@ if (long_el[0]) {
   long_el[0].parentNode.insertBefore(button, long_el.nextSibling);
 }
 
-// Add links to p.d.o
+// Add links to web sites
 var ul_el = document.getElementsByTagName('ul');
 if (ul_el[0]) {
   var el = ul_el[0].children[0].children[0];
   var html = el.innerHTML;
   var re = /([^.]+.: )([^ ,]+)(.*)/;
-  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/source/sid/$2" target="_blank">$2</a> <a href="https://ddtp2.debian.net/ddt.cgi?source=$2" target="_blank">ddtp</a>$3');
+  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/source/sid/$2" target="_blank">$2</a> <a href="https://ddtp2.debian.net/ddt.cgi?source=$2" target="_blank">ddtp</a> <a href="https://bugs.debian.org/$2" target="_blank">bugs</a>$3');
 
   var el = ul_el[0].children[1].children[0];
   var html = el.innerHTML;
   var re = /([^.]+.: )([^ ,]+)(.*)/;
-  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/sid/$2" target="_blank">$2</a> <a href="https://ddtp2.debian.net/ddt.cgi?package=$2" target="_blank">ddtp</a>$3');
+  el.innerHTML = el.innerHTML.replace(re, '$1<a href="https://packages.debian.org/sid/$2" target="_blank">$2</a> <a href="https://ddtp2.debian.net/ddt.cgi?package=$2" target="_blank">ddtp</a> <a href="https://bugs.debian.org/$2" target="_blank">bugs</a>$3');
 }
 
 // Convert timestamps into dates
