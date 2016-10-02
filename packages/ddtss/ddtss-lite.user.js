@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name DDTSS Helper
 // @description Add stuff to DDTSS pages
-// @version 0.6.2
+// @version 0.7
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
 // ==/UserScript==
 // Daniele Forsi
-// Last update 08/02/2016
+// Last update 02/10/2016
 // Creative Commons Zero
 
 // Add description length
