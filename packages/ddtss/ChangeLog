@@ -1,0 +1,41 @@
+Version 0.7
+
+* Add links to bug reports
+* Add a ChangeLog file
+
+Version 0.6.2
+
+* Updated more links to ddtp2
+
+Version 0.6.1
+
+* Update links to ddtp2 (Thomas Vincent)
+
+Version 0.6
+
+* Remove patching which forced loading the iframe with https
+
+Version 0.5
+
+* Fix timestamps conversion (Thomas Vincent)
+
+Version 0.4
+
+* Convert timestamps into readable dates
+
+Version 0.3
+
+* Revert "Make http links active in the "Raw form""
+
+Version 0.3
+
+* Fix one warning about mixed content
+* Add link to ddtp also for source package
+
+Version 0.2
+
+* Small optimization and fixes
+
+Version 0.1
+
+* First working release
