@@ -1,8 +1,11 @@
 This script for Greasemonkey http://www.greasespot.net/ can be used with
 Iceweasel/Firefox to add the following features to the DDTSS pages:
- * links to the relevant pages on packages.debian.org and on
-   ddtp.debian.net both for source and binary packages
+ * links to the relevant pages on various web sites both for source
+   and binary packages
  * character counter for the translation of the short description
- * (EXPERIMENTAL) button to join the lines fo the long description
- * removal of "http:" from the src of the iframe so that it isn't
-   loaded over an insecure connection
+ * button to join the lines of the long description (the DDTSS will
+   split it at the right length, regardless of your browser's settings)
+
+If you have Greasemonkey installed, you can install this script by visiting
+https://github.com/dforsi/debian-tools/raw/master/packages/ddtss/ddtss-lite.user.js
+this way you also get the automatic updates.
