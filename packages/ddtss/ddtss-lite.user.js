@@ -33,7 +33,7 @@ if (short_el[0]) {
       dest_el.oninput();
     }
     var select_el = document.createElement("select");
-    select_el.style = 'width:100%;text-align:right;padding-right:0.5em;';
+    select_el.style = 'width:100%;padding-right:0.5em;';
     select_el.onchange = handler;
     // The first item shows the number of suggestions and resets the short description
     var header_option_el = createOption(dest_el.value, "Suggestions: " + options.length, 'text-align:right;');
