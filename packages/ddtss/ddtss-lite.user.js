@@ -117,8 +117,8 @@ if (ul_el[0]) {
 // Obtain all <pre> tags
 var all_log_tags = document.getElementsByTagName('pre');
 // Find the one containing logs
-for (n in all_log_tags) {
-  log_tag = all_log_tags[n];
+for (var i = 0; i < all_log_tags.length; i++) {
+  log_tag = all_log_tags[i];
   if (log_tag.innerHTML.search(/\d{10} fetched/) != -1) {
     // Convert timestamps
     log_tag.innerHTML = log_tag.innerHTML.replace(/\d{10}/g, function (timestamp) {var date = new Date(1000*timestamp); return date.toLocaleString();});
