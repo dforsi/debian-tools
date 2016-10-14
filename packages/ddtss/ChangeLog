@@ -1,6 +1,8 @@
 Version 0.8
 
 * Add suggestions for short descriptions for supported languages
+* Enable the "Accept with changes" button if the "Join" button
+  changed the long description.
 
 Version 0.7
 

@@ -81,7 +81,14 @@ if (long_el[0]) {
   var text = document.createTextNode('Join');
   button.appendChild(text)
   button.onclick = function () {
-    long_el[0].value = long_el[0].value.replace(long_re, '$1 $2');
+    var old_value, new_value;
+    old_value = long_el[0].value;
+    new_value = long_el[0].value.replace(long_re, '$1 $2');
+    if (old_value != new_value) {
+      long_el[0].value = new_value;
+      var submit = document.getElementsByName("submit")
+      submit[0].disabled = 0;
+    }
     return false;
   }
   long_el[0].parentNode.insertBefore(button, long_el.nextSibling);
