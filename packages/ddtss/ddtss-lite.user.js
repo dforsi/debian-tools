@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name DDTSS Helper
 // @description Add stuff to DDTSS pages
-// @version 0.8
+// @version 0.8.1
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
 // @grant GM_xmlhttpRequest
@@ -62,7 +62,7 @@ if (short_el[0]) {
   var package_name = last(parts);
   GM_xmlhttpRequest({
     method: "GET",
-    url: "https://forsi.it/debian/packages/sid/suggest/suggest-short.php?language=" + language + "&package=" + package_name,
+    url: "https://forsi.it/debian/packages/sid/suggest/suggest-short.php?language=" + language + "&package=" + encodeURIComponent(package_name),
     headers: {"Accept": "application/json"},
     onload: function (response) {
       console.log("GM_xmlhttpRequest", response);
