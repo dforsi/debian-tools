@@ -51,6 +51,10 @@ var translations = {
       "rt-686-pae":           {"signed": true},
       "rt-amd64":             {"signed": true},
     },
+    "linux-kbuild": {
+      "short": "infrastruttura kbuild per Linux @upstreamversion@",
+      "long": "Questo pacchetto fornisce l'infrastruttura kbuild per i pacchetti degli header per la versione @upstreamversion@ del kernel Linux.",
+    },
   },
 };
 
