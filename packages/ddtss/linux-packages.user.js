@@ -43,13 +43,19 @@ var translations = {
       "versatile":            {"class": "Versatile", "longclass": "sistemi Versatile (PB, AB, Qemu)"},
 
       // Source package: linux-signed (will fallback to descriptions for unsigned packages)
-      "686":                  {"signed": true},
       "686-pae":              {"signed": true},
+      "686":                  {"signed": true},
       "amd64":                {"signed": true},
       "arm64":                {"signed": true},
+      "armmp":                {"signed": true},
+      "armmp-lpae":           {"signed": true},
       "powerpc64le":          {"signed": true},
+      "powerpc64":            {"signed": true},
+      "powerpc-smp":          {"signed": true},
+      "powerpc":              {"signed": true},
       "rt-686-pae":           {"signed": true},
       "rt-amd64":             {"signed": true},
+      "s390x":                {"signed": true},
     },
     "linux-kbuild": {
       "short": "infrastruttura kbuild per Linux @upstreamversion@",
