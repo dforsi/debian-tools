@@ -42,16 +42,14 @@ var translations = {
       "s390x-unsigned":       {"class": "IBM zSeries"},
       "versatile":            {"class": "Versatile", "longclass": "sistemi Versatile (PB, AB, Qemu)"},
 
-      /*
-      // Source package: linux-signed (use only if you do not want to fallback to descriptions for unsigned packages)
-      "686":                  {"class": ""},
-      "686-pae":              {"class": ""},
-      "amd64":                {"class": ""},
-      "arm64":                {"class": ""},
-      "powerpc64le":          {"class": ""},
-      "rt-686-pae":           {"class": ""},
-      "rt-amd64":             {"class": ""},
-      */
+      // Source package: linux-signed (will fallback to descriptions for unsigned packages)
+      "686":                  {"signed": true},
+      "686-pae":              {"signed": true},
+      "amd64":                {"signed": true},
+      "arm64":                {"signed": true},
+      "powerpc64le":          {"signed": true},
+      "rt-686-pae":           {"signed": true},
+      "rt-amd64":             {"signed": true},
     },
   },
 };
@@ -62,11 +60,10 @@ var translations = {
 var pathnameParts = window.location.pathname.split('/');
 var language = pathnameParts[3];
 var packageFilename = pathnameParts[5];
-var packageParts = packageFilename.split(/([^-]+-[^-]+)-([0-9]+\.[0-9]+)[^-]+-[^-]+-(.*)/); // eg. linux-image-4.8.0-1-armmp-lpae-unsigned
+var packageParts = packageFilename.split(/([^-]+-[^-]+)-([0-9]+\.[0-9]+)([^-]+-[^-]+)-(.*)/); // eg. linux-image-4.8.0-1-armmp-lpae-unsigned
 var package = packageParts[1];
 var upstreamVersion = packageParts[2];
-var abiname = packageParts[3];
-var signed = !packageParts[3].endsWith("-unsigned");
+var abiname = packageParts[4];
 
 //console.log(pathnameParts);
 //console.log(packageParts);
@@ -82,6 +79,7 @@ if (!translations[language][package][abiname]) {
 }
 var class_ = translations[language][package][abiname].class;
 var longclass = translations[language][package][abiname].longclass || class_;
+var signed = translations[language][package][abiname].signed;
 if (signed) {
   class_ += translations[language][package].signed;
 }
