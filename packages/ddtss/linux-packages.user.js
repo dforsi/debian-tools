@@ -82,14 +82,8 @@ var abiname = packageParts[4];
 //console.log("abiname:", abiname);
 
 // Search translations and build translated descriptions
-if (!translations[language][package][abiname]) {
-  abiname += '-unsigned';
-  if (!translations[language][package][abiname]) {
-    translations[language][package][abiname] = {"class": "<trans>"};
-  }
-}
-var class_ = translations[language][package][abiname].class;
-var longclass = translations[language][package][abiname].longclass || class_;
+var class_ = translations[language][package][abiname].class || translations[language][package][abiname + '-unsigned'].class || "<trans>";
+var longclass = translations[language][package][abiname].longclass || translations[language][package][abiname + '-unsigned'].longclass || class_;
 var signed = translations[language][package][abiname].signed;
 if (signed) {
   class_ += translations[language][package].signed;
