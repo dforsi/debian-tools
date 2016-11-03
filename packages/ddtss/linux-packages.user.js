@@ -86,8 +86,17 @@ if (signed) {
   class_ += translations[language][package].signed;
 }
 
-var shortDescription = translations[language][package].short.replace('@upstreamversion@', upstreamVersion).replace('@class@', class_);
-var longDescription = translations[language][package].long.replace('@upstreamversion@', upstreamVersion).replace('@longclass@', longclass);
+function replaceVariables(template) {
+  return template
+    .replace(/@abiname@/g, '') // FIXME: replacing with the actual value of abiname breaks linux-headers
+    .replace(/@class@/g, class_)
+    .replace(/@localversion@/g, localVersion)
+    .replace(/@longclass@/g, longclass)
+    .replace(/@upstreamversion@/g, upstreamVersion);
+}
+
+var shortDescription = replaceVariables(translations[language][package].short);
+var longDescription = replaceVariables(translations[language][package].long);
 console.log(shortDescription);
 console.log(longDescription);
 
