@@ -6,16 +6,16 @@
 // ==/UserScript==
 
 // Description templates are at https://anonscm.debian.org/cgit/kernel/linux.git/tree/debian/templates/
-//
-// For linux-image-* packages see control.image.in:
-// Linux @upstreamversion@ for @class@
-// The Linux kernel @upstreamversion@ and modules for use on @longclass@.
 
 /**** Start of translations ****/
 
 var translations = {
   /* Italian */
   "it": {
+    "linux-headers": {
+      "short": "file header per Linux @abiname@@localversion@",
+      "long": "Questo pacchetto fornisce i file header del kernel specifici per l'architettura per il kernel Linux @abiname@@localversion@, generalmente usati per compilare moduli del kernel all'esterno dell'albero. Questi file verranno installati in /usr/src/linux-headers-@abiname@@localversion@ e possono essere usati per compilare moduli che si caricano nel kernel fornito dal pacchetto linux-image-@abiname@@localversion@.",
+    },
     "linux-image": {
       "short": "Linux @upstreamversion@ per @class@",
       "signed": " (firmato)",
@@ -63,11 +63,12 @@ var packageFilename = pathnameParts[5];
 var packageParts = packageFilename.split(/([^-]+-[^-]+)-([0-9]+\.[0-9]+)([^-]+-[^-]+)-(.*)/); // eg. linux-image-4.8.0-1-armmp-lpae-unsigned
 var package = packageParts[1];
 var upstreamVersion = packageParts[2];
+var localVersion = packageParts[2] + packageParts[3] + '-' + packageParts[4];
 var abiname = packageParts[4];
 
 //console.log(pathnameParts);
 //console.log(packageParts);
-//console.log(language, package, upstreamVersion);
+//console.log(language, package, upstreamVersion, localVersion);
 //console.log("abiname:", abiname);
 
 // Search translations and build translated descriptions
