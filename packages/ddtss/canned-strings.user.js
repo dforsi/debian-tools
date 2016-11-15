@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name Canned strings for DDTSS
 // @description Add prepared phrases for comments
-// @version 0.4.1
+// @version 0.4.2
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
 // @grant none
 // ==/UserScript==
-// Daniele Forsi 07/01/2016
+// Daniele Forsi 15/11/2016
 // Creative Commons Zero
 
 {
@@ -137,7 +137,7 @@ function add_buttons(comment_el, comment_strings, is_update) {
   }
 }
 
-  if (document.location.toString().match('https://ddtp.debian.net/ddtss/index.cgi/.+/translate/.+')) {
+  if (document.location.toString().match('http.+/(translate|forreview)/.+')) {
     // Add buttons near the comments box
     var target_el = document.getElementsByName("comment");
     add_buttons(target_el, comment_strings, is_update);
