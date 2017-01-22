@@ -113,7 +113,7 @@ function replaceIfNotTranslated(elementName, translation) {
 }
 
 // Replace text if needed and enable submit button only if text was changed
-// setTimeout is used because body onload wiil disable the button
+// setTimeout is used because body onload will disable the button
 var submit = document.getElementsByName("submit")
 if (replaceIfNotTranslated('short', shortDescription)) {
   setTimeout(function(){ submit[0].disabled = false; }, 1000);
