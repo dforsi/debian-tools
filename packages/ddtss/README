@@ -13,3 +13,7 @@ This directory contains:
    functionalities to the DDTSS pages
    To install this script so that it gets automatically updated go to:
    https://github.com/dforsi/debian-tools/raw/master/packages/ddtss/ddtss-lite.user.js
+ * linux-packages.user.js - a Greasemonkey user script that automatically translates in
+   Italian the descriptions of various packages related to the Linux kernel.
+   To install this script so that it gets automatically updated go to:
+   https://github.com/dforsi/debian-tools/raw/master/packages/ddtss/linux-packages.user.js
