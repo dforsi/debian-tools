@@ -13,8 +13,8 @@ var translations = {
   /* Italian */
   "it": {
     "linux-headers": {
-      "short": "file header per Linux @abiname@@localversion@",
-      "long": "Questo pacchetto fornisce i file header del kernel specifici per l'architettura per il kernel Linux @abiname@@localversion@, generalmente usati per compilare moduli del kernel all'esterno dell'albero. Questi file verranno installati in /usr/src/linux-headers-@abiname@@localversion@ e possono essere usati per compilare moduli che si caricano nel kernel fornito dal pacchetto linux-image-@abiname@@localversion@.",
+      "short": "file header per Linux @localversion@",
+      "long": "Questo pacchetto fornisce i file header del kernel specifici per l'architettura per il kernel Linux @localversion@, generalmente usati per compilare moduli del kernel all'esterno dell'albero. Questi file verranno installati in /usr/src/linux-headers-@localversion@ e possono essere usati per compilare moduli che si caricano nel kernel fornito dal pacchetto linux-image-@localversion@.",
     },
     "linux-image": {
       "short": "Linux @upstreamversion@ per @class@",
@@ -61,6 +61,10 @@ var translations = {
       "short": "infrastruttura kbuild per Linux @upstreamversion@",
       "long": "Questo pacchetto fornisce l'infrastruttura kbuild per i pacchetti degli header per la versione @upstreamversion@ del kernel Linux.",
     },
+    "linux-image-dbg" : {
+      "short": "simboli di debug per la configurazione @abiname@ di Linux (metapacchetto)",
+      "long": "Questo pacchetto dipende dai simboli di debug per la configurazione del kernel Linux @abiname@ più recente.",
+    }
   },
 };
 
@@ -71,10 +75,26 @@ var pathnameParts = window.location.pathname.split('/');
 var language = pathnameParts[3];
 var packageFilename = pathnameParts[5];
 var packageParts = packageFilename.split(/([^-]+-[^-]+)-([0-9]+\.[0-9]+)(?:([^-]+-[^-]+)-(.*))?/); // eg. linux-image-4.8.0-1-armmp-lpae-unsigned
-var package = packageParts[1];
-var upstreamVersion = packageParts[2];
-var localVersion = packageParts[2] + packageParts[3] + '-' + packageParts[4];
-var abiname = packageParts[4];
+// Debug packages
+if (packageParts.length == 1) {
+  packageParts = packageFilename.split(/(linux-image)-(.*)(-dbg)/); // eg. linux-image-armmp-lpae-dbg
+  if (packageParts.length == 5) {
+    var package = packageParts[1] + packageParts[3]; // linux-image-dbg
+    var abiname = packageParts[2];
+  }
+} else {
+  var package = packageParts[1];
+  var upstreamVersion = packageParts[2];
+  var localVersion = packageParts[2] + packageParts[3] + '-' + packageParts[4];
+  var abiname = packageParts[4];
+
+  var class_ = translations[language][package][abiname].class || translations[language][package][abiname + '-unsigned'].class || "<trans>";
+  var longclass = translations[language][package][abiname].longclass || translations[language][package][abiname + '-unsigned'].longclass || class_;
+  var signed = translations[language][package][abiname].signed;
+  if (signed) {
+    class_ += translations[language][package].signed;
+  }
+}
 
 //console.log(pathnameParts);
 //console.log(packageParts);
@@ -82,16 +102,10 @@ var abiname = packageParts[4];
 //console.log("abiname:", abiname);
 
 // Search translations and build translated descriptions
-var class_ = translations[language][package][abiname].class || translations[language][package][abiname + '-unsigned'].class || "<trans>";
-var longclass = translations[language][package][abiname].longclass || translations[language][package][abiname + '-unsigned'].longclass || class_;
-var signed = translations[language][package][abiname].signed;
-if (signed) {
-  class_ += translations[language][package].signed;
-}
 
 function replaceVariables(template) {
   return template
-    .replace(/@abiname@/g, '') // FIXME: replacing with the actual value of abiname breaks linux-headers
+    .replace(/@abiname@/g, abiname)
     .replace(/@class@/g, class_)
     .replace(/@localversion@/g, localVersion)
     .replace(/@longclass@/g, longclass)
