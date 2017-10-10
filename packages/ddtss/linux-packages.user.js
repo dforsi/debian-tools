@@ -88,9 +88,10 @@ if (packageParts.length == 1) {
   var localVersion = packageParts[2] + packageParts[3] + '-' + packageParts[4];
   var abiname = packageParts[4];
 
-  var class_ = translations[language][package][abiname].class || translations[language][package][abiname + '-unsigned'].class || "<trans>";
-  var longclass = translations[language][package][abiname].longclass || translations[language][package][abiname + '-unsigned'].longclass || class_;
-  var signed = translations[language][package][abiname].signed;
+  var strings = translations[language][package][abiname] || translations[language][package][abiname + '-unsigned'];
+  var class_ = strings.class || "<trans>";
+  var longclass = strings.longclass || class_;
+  var signed = strings.signed;
   if (signed) {
     class_ += translations[language][package].signed;
   }
