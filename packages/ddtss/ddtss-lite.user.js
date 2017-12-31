@@ -1,14 +1,20 @@
 // ==UserScript==
 // @name DDTSS Helper
 // @description Add stuff to DDTSS pages
-// @version 0.8.2
+// @version 0.8.3
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
 // @grant GM.xmlHttpRequest
 // ==/UserScript==
 // Daniele Forsi
-// Last update 17/12/2017
+// Last update 31/12/2017
 // Creative Commons Zero
+
+// Helper functions
+function enableAcceptWithChanges() {
+  var submit = document.getElementsByName("submit")
+  submit[0].disabled = 0;
+}
 
 // Add stuff near to the short description
 var short_el = document.getElementsByName('short');
@@ -31,6 +37,7 @@ if (short_el[0]) {
     function handler(e) {
       dest_el.value = e.target.value;
       dest_el.oninput();
+      enableAcceptWithChanges();
     }
     var select_el = document.createElement("select");
     select_el.style = 'width:100%;padding-right:0.5em;';
@@ -86,8 +93,7 @@ if (long_el[0]) {
     new_value = long_el[0].value.replace(long_re, '$1 $2');
     if (old_value != new_value) {
       long_el[0].value = new_value;
-      var submit = document.getElementsByName("submit")
-      submit[0].disabled = 0;
+      enableAcceptWithChanges();
     }
     return false;
   }
