@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Helper for linux-* packages
 // @include     https://ddtp2.debian.net/ddtss/index.cgi/*/translate/linux-*
-// @version     1.0.2
+// @version     1.0.3
 // @grant       none
 // ==/UserScript==
 
@@ -18,52 +18,36 @@ var translations = {
     },
     "linux-image": {
       "short": "Linux @upstreamversion@ per @class@",
-      "signed": " (firmato)",
       "long": "Il kernel Linux @upstreamversion@ e i moduli per l'uso su @longclass@.",
 
       // Source package: linux
-      "4kc-malta":            {"class": "schede MIPS Malta"},
-      "5kc-malta":            {"class": "schede MIPS Malta (64 bit)"},
-      "686-pae-unsigned":     {"class": "PC moderni", "longclass": "PC con uno o più processori con la gestione PAE"},
-      "686-unsigned":         {"class": "PC più vecchi", "longclass": "PC con uno o più processori senza la gestione PAE"},
-      "amd64-unsigned":       {"class": "PC a 64 bit", "longclass": "PC con processori AMD64, Intel 64 o VIA Nano"},
-      "arm64-unsigned":       {"class": "macchine ARMv8 a 64 bit"},
-      "armmp-lpae-unsigned":  {"class": "SoC compatibili multipiattaforma ARMv7 con gestione LPAE", "longclass": "kernel ARMv7 multipiattaforma con gestione LPAE. Vedere https://wiki.debian.org/DebianKernel/ARMMP per i dettagli sulle piattaforme gestite"},
-      "armmp-unsigned":       {"class": "SOC compatibili multipiattaforma ARMv7", "longclass": "kernel multipiattaforma ARMv7. Vedere https://wiki.debian.org/DebianKernel/ARMMP per i dettagli sulle piattaforme gestite"},
-      "loongson-3":           {"class": "Loongson 3A/3B", "longclass": "sistemi basati su Loongson 3A o 3B (es. da Loongson o Lemote)"},
-      "marvell":              {"class": "Marvell Kirkwood/Orion", "longclass": "sistemi basati su Marvell Kirkwood (SheevaPlug, QNAP TS-119/TS-219, ecc.) e sistemi basati su Orion 5181, 5182 e 5281 (QNAP TS-109/TS-209, ecc.)"},
-      "octeon":               {"class": "Octeon", "longclass": "Cavium Networks Octeon"},
-      "powerpc64le-unsigned": {"class": "PowerPC Little endian a 64 bit"},
-      "powerpc64-unsigned":   {"class": "PowerPC a 64 bit"},
-      "powerpc-smp-unsigned": {"class": "PowerPC multiprocessore a 32 bit"},
-      "powerpc-unsigned":     {"class": "PowerPC monoprocessore a 32 bit"},
-      "rt-686-pae-unsigned":  {"class": "PC moderni, PREEMPT_RT", "longclass": "PC con uno o più processori con la gestione PAE"},
-      "rt-amd64-unsigned":    {"class": "PC a 64 bit, PREEMPT_RT", "longclass": "PC con processori AMD64, Intel 64 o VIA Nano"},
-      "s390x-unsigned":       {"class": "IBM zSeries"},
-      "versatile":            {"class": "Versatile", "longclass": "sistemi Versatile (PB, AB, Qemu)"},
-
-      // Source package: linux-signed (will fallback to descriptions for unsigned packages)
-      "686-pae":              {"signed": true},
-      "686":                  {"signed": true},
-      "amd64":                {"signed": true},
-      "arm64":                {"signed": true},
-      "armmp":                {"signed": false},
-      "armmp-lpae":           {"signed": false},
-      "powerpc64le":          {"signed": true},
-      "powerpc64":            {"signed": true},
-      "powerpc-smp":          {"signed": true},
-      "powerpc":              {"signed": true},
-      "rt-686-pae":           {"signed": true},
-      "rt-amd64":             {"signed": true},
-      "s390x":                {"signed": true},
+      "4kc-malta":   {"class": "schede MIPS Malta"},
+      "5kc-malta":   {"class": "schede MIPS Malta (64 bit)"},
+      "686-pae":     {"class": "PC moderni", "longclass": "PC con uno o più processori con la gestione PAE"},
+      "686":         {"class": "PC più vecchi", "longclass": "PC con uno o più processori senza la gestione PAE"},
+      "amd64":       {"class": "PC a 64 bit", "longclass": "PC con processori AMD64, Intel 64 o VIA Nano"},
+      "arm64":       {"class": "macchine ARMv8 a 64 bit"},
+      "armmp-lpae":  {"class": "SoC compatibili multipiattaforma ARMv7 con gestione LPAE", "longclass": "kernel ARMv7 multipiattaforma con gestione LPAE. Vedere https://wiki.debian.org/DebianKernel/ARMMP per i dettagli sulle piattaforme gestite"},
+      "armmp":       {"class": "SOC compatibili multipiattaforma ARMv7", "longclass": "kernel multipiattaforma ARMv7. Vedere https://wiki.debian.org/DebianKernel/ARMMP per i dettagli sulle piattaforme gestite"},
+      "loongson-3":  {"class": "Loongson 3A/3B", "longclass": "sistemi basati su Loongson 3A o 3B (es. da Loongson o Lemote)"},
+      "marvell":     {"class": "Marvell Kirkwood/Orion", "longclass": "sistemi basati su Marvell Kirkwood (SheevaPlug, QNAP TS-119/TS-219, ecc.) e sistemi basati su Orion 5181, 5182 e 5281 (QNAP TS-109/TS-209, ecc.)"},
+      "octeon":      {"class": "Octeon", "longclass": "Cavium Networks Octeon"},
+      "powerpc64le": {"class": "PowerPC Little endian a 64 bit"},
+      "powerpc64":   {"class": "PowerPC a 64 bit"},
+      "powerpc-smp": {"class": "PowerPC multiprocessore a 32 bit"},
+      "powerpc":     {"class": "PowerPC monoprocessore a 32 bit"},
+      "rt-686-pae":  {"class": "PC moderni, PREEMPT_RT", "longclass": "PC con uno o più processori con la gestione PAE"},
+      "rt-amd64":    {"class": "PC a 64 bit, PREEMPT_RT", "longclass": "PC con processori AMD64, Intel 64 o VIA Nano"},
+      "s390x":       {"class": "IBM zSeries"},
+      "versatile":   {"class": "Versatile", "longclass": "sistemi Versatile (PB, AB, Qemu)"},
     },
     "linux-kbuild": {
       "short": "infrastruttura kbuild per Linux @upstreamversion@",
       "long": "Questo pacchetto fornisce l'infrastruttura kbuild per i pacchetti degli header per la versione @upstreamversion@ del kernel Linux.",
     },
     "linux-image-dbg" : {
-      "short": "simboli di debug per la configurazione @abiname@ di Linux (metapacchetto)",
-      "long": "Questo pacchetto dipende dai simboli di debug per la configurazione del kernel Linux @abiname@ più recente.",
+      "short": "simboli di debug per linux-image-@localversion@-@abiname@",
+      "long": "Questo pacchetto fornisce i simboli di debug per il kernel Linux e i moduli in linux-image-@localversion@-@abiname@.",
     }
   },
 };
@@ -74,28 +58,20 @@ var translations = {
 var pathnameParts = window.location.pathname.split('/');
 var language = pathnameParts[3];
 var packageFilename = pathnameParts[5];
-var packageParts = packageFilename.split(/([^-]+-[^-]+)-([0-9]+\.[0-9]+)(?:([^-]+-[^-]+)-(.*))?/); // eg. linux-image-4.8.0-1-armmp-lpae-unsigned
+var packageParts = packageFilename.split(/(.+?)-([0-9]+.[0-9]+)(.[0-9]+-[0-9]+)-([a-z].+)/); // eg. linux-image-4.8.0-1-armmp-lpae ==> Array [ "", "linux-image", "4.8", ".0-1", "armmp-lpae", "" ]
+var package = packageParts[1];
+var upstreamVersion = packageParts[2];
+var localVersion = packageParts[2] + packageParts[3];
+var abiname = packageParts[4];
 // Debug packages
-if (packageParts.length == 1) {
-  packageParts = packageFilename.split(/(linux-image)-(.*)(-dbg)/); // eg. linux-image-armmp-lpae-dbg
-  if (packageParts.length == 5) {
-    var package = packageParts[1] + packageParts[3]; // linux-image-dbg
-    var abiname = packageParts[2];
-  }
-} else {
-  var package = packageParts[1];
-  var upstreamVersion = packageParts[2];
-  var localVersion = packageParts[2] + packageParts[3] + '-' + packageParts[4];
-  var abiname = packageParts[4];
-
-  var strings = translations[language][package][abiname] || translations[language][package][abiname + '-unsigned'] || {};
-  var class_ = strings.class || "<trans>";
-  var longclass = strings.longclass || class_;
-  var signed = strings.signed;
-  if (signed) {
-    class_ += translations[language][package].signed;
-  }
+var debug_suffix = "-dbg";
+if (abiname.endsWith(debug_suffix)) {
+  package += debug_suffix;
+  abiname = abiname.substring(0, abiname.length - debug_suffix.length);
 }
+var strings = translations[language][package][abiname] || {};
+var class_ = strings.class || "<trans>";
+var longclass = strings.longclass || class_;
 
 //console.log(pathnameParts);
 //console.log(packageParts);
