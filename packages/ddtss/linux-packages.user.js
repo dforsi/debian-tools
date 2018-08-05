@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Helper for linux-* packages
 // @include     https://ddtp2.debian.net/ddtss/index.cgi/*/translate/linux-*
-// @version     1.0.3
+// @version     1.0.4
 // @grant       none
 // ==/UserScript==
 
@@ -58,10 +58,10 @@ var translations = {
 var pathnameParts = window.location.pathname.split('/');
 var language = pathnameParts[3];
 var packageFilename = pathnameParts[5];
-var packageParts = packageFilename.split(/(.+?)-([0-9]+.[0-9]+)(.[0-9]+-[0-9]+)-([a-z].+)/); // eg. linux-image-4.8.0-1-armmp-lpae ==> Array [ "", "linux-image", "4.8", ".0-1", "armmp-lpae", "" ]
+var packageParts = packageFilename.split(/(.+?)-([0-9]+.[0-9]+)(.[0-9]+-[0-9]+)-(.+)/); // eg. linux-image-4.8.0-1-armmp-lpae ==> Array [ "", "linux-image", "4.8", ".0-1", "armmp-lpae", "" ]
 var package = packageParts[1];
 var upstreamVersion = packageParts[2];
-var localVersion = packageParts[2] + packageParts[3];
+var localVersion = packageParts[2] + packageParts[3] + '-' + packageParts[4];
 var abiname = packageParts[4];
 // Debug packages
 var debug_suffix = "-dbg";
