@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Helper for linux-* packages
 // @include     https://ddtp2.debian.net/ddtss/index.cgi/*/translate/linux-*
-// @version     1.0.1
+// @version     1.0.2
 // @grant       none
 // ==/UserScript==
 
@@ -88,7 +88,7 @@ if (packageParts.length == 1) {
   var localVersion = packageParts[2] + packageParts[3] + '-' + packageParts[4];
   var abiname = packageParts[4];
 
-  var strings = translations[language][package][abiname] || translations[language][package][abiname + '-unsigned'];
+  var strings = translations[language][package][abiname] || translations[language][package][abiname + '-unsigned'] || {};
   var class_ = strings.class || "<trans>";
   var longclass = strings.longclass || class_;
   var signed = strings.signed;
