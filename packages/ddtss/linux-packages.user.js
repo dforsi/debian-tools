@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Helper for linux-* packages
 // @include     https://ddtp2.debian.net/ddtss/index.cgi/*/translate/linux-*
-// @version     1.0.5
+// @version     1.0.6
 // @grant       none
 // ==/UserScript==
 
@@ -69,6 +69,11 @@ if (abiname.endsWith(debug_suffix)) {
   package += debug_suffix;
   localVersion = localVersion.replace(debug_suffix, "");
   abiname = abiname.substring(0, abiname.length - debug_suffix.length);
+}
+// Unsigned packages
+var unsigned_suffix = "-unsigned";
+if (abiname.endsWith(unsigned_suffix)) {
+  abiname = abiname.replace(unsigned_suffix, "");
 }
 var strings = translations[language][package][abiname] || {};
 var class_ = strings.class || "<trans>";
