@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Helper for linux-* packages
 // @include     https://ddtp2.debian.net/ddtss/index.cgi/*/translate/linux-*
-// @version     1.0.4
+// @version     1.0.5
 // @grant       none
 // ==/UserScript==
 
@@ -46,8 +46,8 @@ var translations = {
       "long": "Questo pacchetto fornisce l'infrastruttura kbuild per i pacchetti degli header per la versione @upstreamversion@ del kernel Linux.",
     },
     "linux-image-dbg" : {
-      "short": "simboli di debug per linux-image-@localversion@-@abiname@",
-      "long": "Questo pacchetto fornisce i simboli di debug per il kernel Linux e i moduli in linux-image-@localversion@-@abiname@.",
+      "short": "simboli di debug per linux-image-@localversion@",
+      "long": "Questo pacchetto fornisce i simboli di debug separati per il kernel Linux e i moduli in linux-image-@localversion@.",
     }
   },
 };
@@ -67,6 +67,7 @@ var abiname = packageParts[4];
 var debug_suffix = "-dbg";
 if (abiname.endsWith(debug_suffix)) {
   package += debug_suffix;
+  localVersion = localVersion.replace(debug_suffix, "");
   abiname = abiname.substring(0, abiname.length - debug_suffix.length);
 }
 var strings = translations[language][package][abiname] || {};
