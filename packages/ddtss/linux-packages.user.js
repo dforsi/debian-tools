@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Helper for linux-* packages
 // @include     https://ddtp2.debian.net/ddtss/index.cgi/*/translate/linux-*
-// @version     1.0.6
+// @version     1.0.7
 // @grant       none
 // ==/UserScript==
 
@@ -29,6 +29,7 @@ var translations = {
       "arm64":       {"class": "macchine ARMv8 a 64 bit"},
       "armmp-lpae":  {"class": "SoC compatibili multipiattaforma ARMv7 con gestione LPAE", "longclass": "kernel ARMv7 multipiattaforma con gestione LPAE. Vedere https://wiki.debian.org/DebianKernel/ARMMP per i dettagli sulle piattaforme gestite"},
       "armmp":       {"class": "SOC compatibili multipiattaforma ARMv7", "longclass": "kernel multipiattaforma ARMv7. Vedere https://wiki.debian.org/DebianKernel/ARMMP per i dettagli sulle piattaforme gestite"},
+      "cloud-amd64": {"class": "cloud x86-64 (firmato)", "longclass": "piattaforme cloud Amazon EC2, Google Compute Engine e Microsoft Azure"},
       "loongson-3":  {"class": "Loongson 3A/3B", "longclass": "sistemi basati su Loongson 3A o 3B (es. da Loongson o Lemote)"},
       "marvell":     {"class": "Marvell Kirkwood/Orion", "longclass": "sistemi basati su Marvell Kirkwood (SheevaPlug, QNAP TS-119/TS-219, ecc.) e sistemi basati su Orion 5181, 5182 e 5281 (QNAP TS-109/TS-209, ecc.)"},
       "octeon":      {"class": "Octeon", "longclass": "Cavium Networks Octeon"},
