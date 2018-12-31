@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Helper for linux-* packages
 // @include     https://ddtp2.debian.net/ddtss/index.cgi/*/translate/linux-*
-// @version     1.0.8
+// @version     1.0.9
 // @grant       none
 // ==/UserScript==
 
@@ -21,8 +21,8 @@ var translations = {
       "long": "Il kernel Linux @upstreamversion@ e i moduli per l'uso su @longclass@.",
 
       // Source package: linux
-      "4kc-malta":   {"class": "schede MIPS Malta"},
-      "5kc-malta":   {"class": "schede MIPS Malta (64 bit)"},
+      "4kc-malta":   {"class": "MIPS Malta", "longclass": "schede MIPS Malta"},
+      "5kc-malta":   {"class": "MIPS Malta (64 bit)", "longclass": "schede MIPS Malta (64 bit)"},
       "686-pae":     {"class": "PC moderni", "longclass": "PC con uno o più processori con la gestione PAE"},
       "686":         {"class": "PC più vecchi", "longclass": "PC con uno o più processori senza la gestione PAE"},
       "amd64":       {"class": "PC a 64 bit", "longclass": "PC con processori AMD64, Intel 64 o VIA Nano"},
