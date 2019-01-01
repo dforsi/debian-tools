@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Helper for linux-* packages
 // @include     https://ddtp2.debian.net/ddtss/index.cgi/*/translate/linux-*
-// @version     1.0.9
+// @version     1.0.10
 // @grant       none
 // ==/UserScript==
 
@@ -48,7 +48,7 @@ var translations = {
     },
     "linux-image-dbg" : {
       "short": "simboli di debug per linux-image-@localversion@",
-      "long": "Questo pacchetto fornisce i simboli di debug separati per il kernel Linux e i moduli in linux-image-@localversion@.",
+      "long": "Questo pacchetto fornisce i simboli di debug per il kernel Linux e i moduli in linux-image-@localversion@.", // non traduciamo "detached"
     }
   },
 };
