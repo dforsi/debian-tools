@@ -46,6 +46,22 @@ var translations = {
       "short": "infrastruttura kbuild per Linux @upstreamversion@",
       "long": "Questo pacchetto fornisce l'infrastruttura kbuild per i pacchetti degli header per la versione @upstreamversion@ del kernel Linux.",
     },
+      "linux-doc": {
+      "short": "documentazione specifica per il kernel Linux versione @upstreamversion@",
+      "long": "Questo pacchetto fornisce i diversi file README e la documentazione HTML per il kernel Linux versione @upstreamversion@. Moltissima documentazione, incluse le descrizioni di vari sottosistemi del kernel, file system, note specifiche per i driver e simili. Consultare il file /usr/share/doc/linux-doc-@upstreamversion@/Documentation/00-INDEX per la descrizione dettagliata dei contenuti.",
+    },
+    "linux-support": {
+      "short": "file di supporto per Linux @upstreamversion@",
+      "long": "Questo pacchetto fornisce i file di supporto per la compilazione del kernel Linux, come script per gestire informazioni ABI e per la generazione dei metadati del sistema di compilazione. @upstreamversion@ del kernel Linux.",
+    },
+    "linux-perf": {
+      "short": "strumenti di analisi delle prestazioni per Linux @upstreamversion@",
+      "long": 'Questo pacchetto contiene gli strumenti di analisi delle prestazioni "perf" per la versione @upstreamversion@ del kernel Linux.',
+    },
+    "linux-source": {
+      "short": "sorgenti del kernel Linux per la versione @upstreamversion@ con patch Debian",
+      "long": 'Questo pacchetto fornisce il codice sorgente per la versione @upstreamversion@ del kernel Linux. Questo sorgente segue strettamente i rilasci ufficiali del kernel Linux. Le modifiche di Debian a tali sorgenti consistono in correzioni di sicurezza, correzioni di bug e funzionalità che sono già state (o si ritengono) accettate dai manutentori originali.',
+    },   
     "linux-image-dbg" : {
       "short": "simboli di debug per linux-image-@localversion@",
       "long": "Questo pacchetto fornisce i simboli di debug per il kernel Linux e i moduli in linux-image-@localversion@.", // non traduciamo "detached"
