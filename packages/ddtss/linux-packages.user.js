@@ -88,7 +88,7 @@ if (packageFilename.startsWith("linux-doc") ||
   var abiname = ""; // unused but it needs to be defined
 } else {
 var packageParts = packageFilename.split(/(.+?)-([0-9]+.[0-9]+)(.[0-9]+-[0-9]+)-(.+)/); // eg. linux-image-4.8.0-1-armmp-lpae ==> Array [ "", "linux-image", "4.8", ".0-1", "armmp-lpae", "" ]
-var package = packageParts[1];  
+var package = packageParts[1];
 var upstreamVersion = packageParts[2];
 var localVersion = packageParts[2] + packageParts[3] + '-' + packageParts[4];
 var abiname = packageParts[4];
