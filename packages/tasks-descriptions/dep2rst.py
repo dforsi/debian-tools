@@ -52,15 +52,16 @@ def print_package(cache, package, depth, long_title=True):
     else:
         title = package.name
 
+    print()
     print(title)
     print(depth_char[depth] * len(title))
-    print()
-    print(short_description)
-    print()
+    if short_description:
+        print(short_description)
+        print()
     print(long_description)
-    print()
-    print(package.versions[0].homepage)
-    print()
+    if package.versions[0].homepage:
+        print(package.versions[0].homepage)
+        print()
 
 
 def get_dependencies(cache, package):
