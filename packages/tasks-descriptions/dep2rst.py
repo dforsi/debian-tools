@@ -6,6 +6,7 @@ Author: Daniele Forsi IU5HKX 2019/01/08
 License: CC0
 """
 
+import locale
 import apt
 import apt_pkg
 
@@ -113,5 +114,6 @@ def main(package_name):
 
 
 if __name__ == '__main__':
+    locale.setlocale(locale.LC_ALL, '')
     package_name = "hamradio-tasks"
     main(package_name)
