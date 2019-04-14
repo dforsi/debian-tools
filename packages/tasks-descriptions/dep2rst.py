@@ -59,6 +59,8 @@ def print_package(cache, package, depth, long_title=True):
     print()
     print(long_description)
     print()
+    print(package.versions[0].homepage)
+    print()
 
 
 def get_dependencies(cache, package):
