@@ -61,7 +61,7 @@ var translations = {
     "linux-source": {
       "short": "sorgenti del kernel Linux per la versione @upstreamversion@ con patch Debian",
       "long": 'Questo pacchetto fornisce il codice sorgente per la versione @upstreamversion@ del kernel Linux. Questo sorgente segue strettamente i rilasci ufficiali del kernel Linux. Le modifiche di Debian a tali sorgenti consistono in correzioni di sicurezza, correzioni di bug e funzionalità che sono già state (o si ritengono) accettate dai manutentori originali.',
-    },   
+    },
     "linux-image-dbg" : {
       "short": "simboli di debug per linux-image-@localversion@",
       "long": "Questo pacchetto fornisce i simboli di debug per il kernel Linux e i moduli in linux-image-@localversion@.", // non traduciamo "detached"
