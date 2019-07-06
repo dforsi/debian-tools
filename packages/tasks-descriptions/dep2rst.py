@@ -21,12 +21,11 @@ def split_description(package):
     for line in lines[1:]:
         if line.startswith(" ."):
             long_description += "\n"
-        elif line.startswith("  "):
-            # Workaround for indented lines without bullets
-            if package.name in ["aldo", "ax25-apps", "d-rats", "fccexam", "hamexam", "linpsk", "multimon"]:
-                long_description += "\n"
-            long_description += line[1:] + "\n"
         else:
+            if line.startswith("  "):
+                # Workaround for indented lines without bullets
+                if package.name in ["aldo", "ax25-apps", "d-rats", "fccexam", "hamexam", "linpsk", "multimon"]:
+                    long_description += "\n"
             long_description += line[1:] + "\n"
 
     return short_description, long_description
