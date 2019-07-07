@@ -31,7 +31,7 @@ def split_description(package):
     return short_description, long_description
 
 
-def print_package(cache, package, depth, long_title=True):
+def print_package(cache, package, depth, verbose_title=True):
     """ Print information about a single package """
 
     depth_char = {0: "=", 1: "-", 2: "~"}
@@ -44,7 +44,7 @@ def print_package(cache, package, depth, long_title=True):
     # Don't use raw_description because it's broken for translated packages
     short_description, long_description = split_description(package)
 
-    if long_title:
+    if verbose_title:
         title = short_description + " (" + package.name + ")"
         short_description = ""
     else:
