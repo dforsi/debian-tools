@@ -8,7 +8,7 @@
 // @grant GM_xmlhttpRequest
 // ==/UserScript==
 // Daniele Forsi
-// Last update 20/08/2019
+// Last update 20/07/2019
 // Creative Commons Zero
 
 // Helper functions
