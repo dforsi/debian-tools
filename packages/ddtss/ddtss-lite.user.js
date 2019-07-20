@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name DDTSS Helper
 // @description Add stuff to DDTSS pages
-// @version 0.8.3
+// @version 0.8.4
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
 // @grant GM.xmlHttpRequest
+// @grant GM_xmlhttpRequest
 // ==/UserScript==
 // Daniele Forsi
-// Last update 31/12/2017
+// Last update 20/08/2019
 // Creative Commons Zero
 
 // Helper functions
@@ -67,7 +68,12 @@ if (short_el[0]) {
   var parts = window.location.pathname.split('/');
   var language = parts[3];
   var package_name = last(parts);
-  GM.xmlHttpRequest({
+  try {
+    var request = GM.xmlHttpRequest;
+  } catch (e) {
+    var request = GM_xmlhttpRequest;
+  }
+  request({
     method: "GET",
     url: "https://forsi.it/debian/packages/sid/suggest/suggest-short.php?language=" + language + "&package=" + encodeURIComponent(package_name),
     headers: {"Accept": "application/json"},
