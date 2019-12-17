@@ -46,7 +46,7 @@ var translations = {
       "short": "infrastruttura kbuild per Linux @upstreamversion@",
       "long": "Questo pacchetto fornisce l'infrastruttura kbuild per i pacchetti degli header per la versione @upstreamversion@ del kernel Linux.",
     },
-      "linux-doc": {
+    "linux-doc": {
       "short": "documentazione specifica per il kernel Linux versione @upstreamversion@",
       "long": "Questo pacchetto fornisce i diversi file README e la documentazione HTML per il kernel Linux versione @upstreamversion@. Moltissima documentazione, incluse le descrizioni di vari sottosistemi del kernel, file system, note specifiche per i driver e simili. Consultare il file /usr/share/doc/linux-doc-@upstreamversion@/Documentation/00-INDEX per la descrizione dettagliata dei contenuti.",
     },
@@ -75,11 +75,25 @@ var translations = {
 var pathnameParts = window.location.pathname.split('/');
 var language = pathnameParts[3];
 var packageFilename = pathnameParts[5];
+
+if (packageFilename.startsWith("linux-doc") || 
+    packageFilename.startsWith("linux-kbuild") ||
+    packageFilename.startsWith("linux-support") ||
+    packageFilename.startsWith("linux-perf") ||
+    packageFilename.startsWith("linux-source")
+   ) {
+  var packageParts = packageFilename.split(/(.+?)-([0-9]+\.[0-9]+).*/);
+  var package = packageParts[1]; // e.g. linux-doc
+  var upstreamVersion = packageParts[2]; // e.g. 4.19
+  var abiname = ""; // unused but it needs to be defined
+} else {
 var packageParts = packageFilename.split(/(.+?)-([0-9]+.[0-9]+)(.[0-9]+-[0-9]+)-(.+)/); // eg. linux-image-4.8.0-1-armmp-lpae ==> Array [ "", "linux-image", "4.8", ".0-1", "armmp-lpae", "" ]
 var package = packageParts[1];
 var upstreamVersion = packageParts[2];
 var localVersion = packageParts[2] + packageParts[3] + '-' + packageParts[4];
 var abiname = packageParts[4];
+}
+
 // Debug packages
 var debug_suffix = "-dbg";
 if (abiname.endsWith(debug_suffix)) {
