@@ -6,7 +6,8 @@
 // ==/UserScript==
 // Last update 04/07/2020
 
-// Description templates are at https://anonscm.debian.org/cgit/kernel/linux.git/tree/debian/templates/
+// Description templates are contained in the various control.* files at
+// https://salsa.debian.org/kernel-team/linux/-/tree/master/debian/templates
 
 /**** Start of translations ****/
 
