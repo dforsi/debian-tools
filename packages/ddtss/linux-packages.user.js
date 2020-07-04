@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name        Helper for linux-* packages
 // @include     https://ddtp.debian.org/ddtss/index.cgi/*/translate/linux-*
-// @version     1.0.12
+// @version     1.0.13
 // @grant       none
 // ==/UserScript==
+// Last update 04/07/2020
 
 // Description templates are at https://anonscm.debian.org/cgit/kernel/linux.git/tree/debian/templates/
 
