@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        Helper for linux-* packages
-// @include     https://ddtp2.debian.net/ddtss/index.cgi/*/translate/linux-*
+// @include     https://ddtp.debian.org/ddtss/index.cgi/*/translate/linux-*
 // @version     1.0.12
 // @grant       none
 // ==/UserScript==

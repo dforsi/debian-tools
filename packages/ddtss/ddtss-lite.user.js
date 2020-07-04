@@ -2,8 +2,8 @@
 // @name DDTSS Helper
 // @description Add stuff to DDTSS pages
 // @version 0.8.4
-// @match https://ddtp2.debian.net/ddtss/index.cgi/*/forreview/*
-// @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
+// @match https://ddtp.debian.org/ddtss/index.cgi/*/forreview/*
+// @match https://ddtp.debian.org/ddtss/index.cgi/*/translate/*
 // @grant GM.xmlHttpRequest
 // @grant GM_xmlhttpRequest
 // ==/UserScript==
@@ -113,7 +113,7 @@ function addWebsiteLinks(element, isSourcePackage) {
   var ddtpFragment = isSourcePackage ? 'source' : 'package';
   el.innerHTML = el.innerHTML.replace(re,
     '$1<a href="https://packages.debian.org/' + packagesFragment + 'sid/$2" target="_blank">$2</a>' +
-    ' <a href="https://ddtp2.debian.net/ddt.cgi?' + ddtpFragment + '=$2" target="_blank">ddtp</a>' +
+    ' <a href="https://ddtp.debian.org/ddt.cgi?' + ddtpFragment + '=$2" target="_blank">ddtp</a>' +
     ' <a href="https://bugs.debian.org/$2" target="_blank">bugs</a>' +
     '$3');
 }

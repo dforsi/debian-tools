@@ -2,8 +2,8 @@
 // @name Canned strings for DDTSS
 // @description Add prepared phrases for comments
 // @version 0.4.2
-// @match https://ddtp2.debian.net/ddtss/index.cgi/*/forreview/*
-// @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
+// @match https://ddtp.debian.org/ddtss/index.cgi/*/forreview/*
+// @match https://ddtp.debian.org/ddtss/index.cgi/*/translate/*
 // @grant none
 // ==/UserScript==
 // Daniele Forsi 15/11/2016
