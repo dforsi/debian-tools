@@ -17,3 +17,6 @@ This directory contains:
    Italian the descriptions of various packages related to the Linux kernel.
    To install this script so that it gets automatically updated go to:
    https://github.com/dforsi/debian-tools/raw/master/packages/ddtss/linux-packages.user.js
+ * new-layout-ddtss.user.js - a Greasemonkey user script that adds Bootstrap styles
+   To install this script so that it gets automatically updated go to:
+   https://github.com/dforsi/debian-tools/raw/master/packages/ddtss/new-layout-ddtss.user.js
