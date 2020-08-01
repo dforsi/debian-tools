@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name DDTSS Helper
 // @description Add stuff to DDTSS pages
-// @version 0.8.5
+// @version 0.8.6
 // @match https://ddtp.debian.org/ddtss/index.cgi/*/forreview/*
 // @match https://ddtp.debian.org/ddtss/index.cgi/*/translate/*
 // @grant GM.xmlHttpRequest
 // @grant GM_xmlhttpRequest
 // ==/UserScript==
 // Daniele Forsi
-// Last update 04/07/2020
+// Last update 01/08/2020
 // Creative Commons Zero
 
 // Helper functions
