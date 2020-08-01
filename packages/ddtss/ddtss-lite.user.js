@@ -90,13 +90,14 @@ var long_el = document.getElementsByName('long');
 if (long_el[0]) {
   // remove newlines that don't mark the end of a paragraph
   var long_re = /([^.])\n([^ .])/gm;
+  var split_re = /(?![^\n]{1,75}$)([^\n]{1,75})\s/g;
   var button = document.createElement('button');
-  var text = document.createTextNode('Join');
+  var text = document.createTextNode('Wrap');
   button.appendChild(text)
   button.onclick = function () {
     var old_value, new_value;
     old_value = long_el[0].value;
-    new_value = long_el[0].value.replace(long_re, '$1 $2');
+    new_value = long_el[0].value.replace(long_re, '$1 $2').replace(split_re, '$1\n');
     if (old_value != new_value) {
       long_el[0].value = new_value;
       enableAcceptWithChanges();
