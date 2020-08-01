@@ -3,14 +3,14 @@
 // @namespace   Violentmonkey Scripts
 // @match       https://ddtp.debian.org/ddtss/index.cgi/it
 // @grant       GM_addStyle
-// @version     1.1
+// @version     1.2
 // @author      Daniele Forsi <dforsi@gmail.com>
 // @description Testing a different layout for the main page.
 // @require     https://code.jquery.com/jquery-3.5.1.slim.min.js
 // @require     https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js
 // @require     https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js
 // ==/UserScript==
-// Date 28/7/2020, 13:33:21
+// Date 01/08/2020
 
 function addStyle(style) {
   var head = document.getElementsByTagName('head')[0];
@@ -25,6 +25,19 @@ function addStyles() {
   addStyle('.nav a{color:initial}');
   addStyle('input[type=checkbox]{margin:0.5em}');
   addStyle('@import "https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css";');
+}
+
+function createCounterByClassName(name) {
+  try {
+    let elements = document.getElementsByClassName(name);
+    for (var i = 0; i < elements.length; i++) {
+      let lists = elements[i].querySelectorAll("ol");
+
+      elements[i].children[0].append(` (${lists[0].children.length})`);
+    }
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 function extractHelpText(selector) {
@@ -237,6 +250,7 @@ function reorderForreview() {
 
 function main() {
   extractHelpText(".help");
+  createCounterByClassName("untranslated");
   createBadgesByTagName("h2");
   createBadgesByTagName("h3");
   let header = document.getElementsByTagName('h1');
