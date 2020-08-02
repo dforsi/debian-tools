@@ -2,6 +2,7 @@
 // @name        New layout for DDTSS
 // @namespace   Violentmonkey Scripts
 // @match       https://ddtp.debian.org/ddtss/index.cgi/it
+// @match       https://ddtp.debian.org/ddtss/index.cgi/it/#
 // @grant       GM_addStyle
 // @version     1.2
 // @author      Daniele Forsi <dforsi@gmail.com>
@@ -248,6 +249,19 @@ function reorderForreview() {
   }
 }
 
+function rememberTab() {
+  $(document).ready(function(){
+    $('a[data-toggle="tab"]').on("click", function() {
+      const hash = $(this).attr("href");
+      history.replaceState(null, null, hash);
+    });
+
+    if (location.hash) {
+      $(`#mainTab a[href="${location.hash}"]`).tab('show');
+    }
+  });
+}
+
 function main() {
   extractHelpText(".help");
   createCounterByClassName("untranslated");
@@ -260,6 +274,7 @@ function main() {
   moveMessages();
   reorderForreview();
   addStyles();
+  rememberTab();
 }
 
 main();
