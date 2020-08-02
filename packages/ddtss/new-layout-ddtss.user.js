@@ -4,14 +4,14 @@
 // @match       https://ddtp.debian.org/ddtss/index.cgi/it
 // @match       https://ddtp.debian.org/ddtss/index.cgi/it/#
 // @grant       GM_addStyle
-// @version     1.2
+// @version     1.3
 // @author      Daniele Forsi <dforsi@gmail.com>
 // @description Testing a different layout for the main page.
 // @require     https://code.jquery.com/jquery-3.5.1.slim.min.js
 // @require     https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js
 // @require     https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js
 // ==/UserScript==
-// Date 01/08/2020
+// Date 02/08/2020
 
 function addStyle(style) {
   var head = document.getElementsByTagName('head')[0];
