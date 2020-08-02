@@ -254,10 +254,16 @@ function rememberTab() {
     $('a[data-toggle="tab"]').on("click", function() {
       const hash = $(this).attr("href");
       history.replaceState(null, null, hash);
+      localStorage.setItem('lastTab', hash);
     });
 
     if (location.hash) {
       $(`#mainTab a[href="${location.hash}"]`).tab('show');
+    } else {
+      const hash = localStorage.getItem('lastTab');
+      if (hash) {
+          $('[href="' + hash + '"]').tab('show');
+      }
     }
   });
 }
