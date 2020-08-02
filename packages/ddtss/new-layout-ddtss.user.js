@@ -4,7 +4,7 @@
 // @match       https://ddtp.debian.org/ddtss/index.cgi/it
 // @match       https://ddtp.debian.org/ddtss/index.cgi/it/#
 // @grant       GM_addStyle
-// @version     1.3
+// @version     1.3.1
 // @author      Daniele Forsi <dforsi@gmail.com>
 // @description Testing a different layout for the main page.
 // @require     https://code.jquery.com/jquery-3.5.1.slim.min.js
