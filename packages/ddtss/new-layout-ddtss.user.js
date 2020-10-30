@@ -2,16 +2,29 @@
 // @name        New layout for DDTSS
 // @namespace   Violentmonkey Scripts
 // @match       https://ddtp.debian.org/ddtss/index.cgi/it
+// @match       https://ddtp.debian.org/ddtss/index.cgi/it/
 // @match       https://ddtp.debian.org/ddtss/index.cgi/it/#
 // @grant       GM_addStyle
-// @version     1.3.1
+// @version     1.4
 // @author      Daniele Forsi <dforsi@gmail.com>
 // @description Testing a different layout for the main page.
 // @require     https://code.jquery.com/jquery-3.5.1.slim.min.js
 // @require     https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js
 // @require     https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js
 // ==/UserScript==
-// Date 02/08/2020
+// Date 30/10/2020
+
+function unstyleLists() {
+  var elements = document.getElementsByTagName('ol');
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].classList.add("list-unstyled");
+  }
+
+  var elements = document.getElementsByTagName('ul');
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].classList.add("list-unstyled");
+  }
+}
 
 function addStyle(style) {
   var head = document.getElementsByTagName('head')[0];
@@ -23,22 +36,10 @@ function addStyles() {
   addStyle('body{margin:0.5em !important}');
   addStyle('a:visited{color:green}');
   addStyle('li:nth-of-type(odd),.nav li:not(active),footer{background-color:rgba(0,0,0,.05)}');
+  unstyleLists();
   addStyle('.nav a{color:initial}');
   addStyle('input[type=checkbox]{margin:0.5em}');
   addStyle('@import "https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css";');
-}
-
-function createCounterByClassName(name) {
-  try {
-    let elements = document.getElementsByClassName(name);
-    for (var i = 0; i < elements.length; i++) {
-      let lists = elements[i].querySelectorAll("ol");
-
-      elements[i].children[0].append(` (${lists[0].children.length})`);
-    }
-  } catch (e) {
-    console.error(e);
-  }
 }
 
 function extractHelpText(selector) {
@@ -164,18 +165,18 @@ function moveForm() {
 
 function moveFooter() {
   try {
-    let footer = document.createElement("footer");
-    let messages = document.getElementsByClassName('messages');
-    footer.append(messages[0].children[5]); // Refresh
+    let footer = document.createElement("div");
+    let table = document.getElementsByTagName("table");
+    footer.append(table[0].nextElementSibling); // Refresh
     footer.append(" :: ");
-    footer.append(messages[0].children[5]); // Another language
+    footer.append(table[0].nextElementSibling); // Another language
     footer.append(" :: ");
-    footer.append(messages[0].children[5]); // Wordlist
+    footer.append(table[0].nextElementSibling); // Wordlist
     footer.append(" :: ");
-    footer.append(messages[0].children[5]); // DDTP documentation
+    footer.append(table[0].nextElementSibling); // DDTP documentation
     footer.append(" :: ");
-    footer.append(messages[0].childNodes[9]); // Logged in as
-    footer.classList = ["text-muted"];
+    footer.append(document.body.lastChild); // Logged in as (it's a text node, not an element)
+    footer.classList.add("footer", "text-muted");
     document.body.append(footer);
   } catch (e) {
     console.error(e);
@@ -184,8 +185,27 @@ function moveFooter() {
 
 function moveMessages() {
   try {
-    let messages = document.getElementsByClassName('messages');
-    messages[0].append(messages[1]);
+    let all_messages = document.querySelectorAll('.messages');
+    let messages = document.createElement('div');
+
+    let h2 = document.createElement('h2');
+    h2.textContent = "Messages";
+    messages.append(h2);
+
+    let header = document.getElementsByTagName('h1');
+    messages.append(header[0].nextElementSibling);
+    messages.append(header[0].nextElementSibling);
+    messages.append(header[0].nextElementSibling);
+    messages.append(header[0].nextElementSibling);
+    messages.append(header[0].nextElementSibling);
+    messages.append(header[0].nextElementSibling);
+
+    for (var i = 0; i < all_messages.length; i++) {
+      all_messages[i].classList.remove("messages");
+      messages.append(all_messages[i]);
+    }
+    messages.classList.add("messages");
+    document.body.append(messages);
   } catch (e) {
     console.error(e);
   }
@@ -194,8 +214,6 @@ function moveMessages() {
 function reorderForreview() {
   try {
     let forreview = document.querySelectorAll("#forreview li");
-    var reviewCount = 0;
-    var child;
     let lists = document.createElement('div');
     lists.classList = ["clearfix"];
 
@@ -203,21 +221,19 @@ function reorderForreview() {
     lists.children[0].append("Need initial review");
     lists.children[0].append(document.createElement('ol'));
     lists.children[0].classList = "float-left pr-3";
-    lists.children[0].children[0].classList = "list-unstyled";
 
     lists.append(document.createElement('div'));
     lists.children[1].append("Need review, had 1");
     lists.children[1].append(document.createElement('ol'));
     lists.children[1].classList = "float-left pr-3";
-    lists.children[1].children[0].classList = "list-unstyled";
 
     lists.append(document.createElement('div'));
-    lists.children[2].append("Need review, had 2");
+    lists.children[2].append("Need review, had 2+");
     lists.children[2].append(document.createElement('ol'));
     lists.children[2].classList = "float-left pr-3";
-    lists.children[2].children[0].classList = "list-unstyled";
 
     for (var i = 0; i < forreview.length; i++) {
+      var child;
       let text = forreview[i].innerText;
       switch (text.slice(-2)) {
         case "w)": child = 0; break; // (needs initial review)
@@ -270,17 +286,17 @@ function rememberTab() {
 
 function main() {
   extractHelpText(".help");
-  createCounterByClassName("untranslated");
+  moveMessages();
   createBadgesByTagName("h2");
   createBadgesByTagName("h3");
   let header = document.getElementsByTagName('h1');
-  createTabs(header[0], [/*"messages", */"untranslated", "forreview", "reviewed", "translated", "infobox", "messages"]);
+  createTabs(header[0], ["messages", "untranslated", "forreview", "reviewed", "translated", "infobox"]);
   moveForm();
   moveFooter();
-  moveMessages();
   reorderForreview();
   addStyles();
   rememberTab();
 }
 
 main();
+
