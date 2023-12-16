@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name        Helper for linux-* packages
 // @include     https://ddtp.debian.org/ddtss/index.cgi/*/translate/linux-*
-// @version     1.0.13
+// @version     1.0.14
 // @grant       none
 // ==/UserScript==
-// Last update 04/07/2020
+// Last update 06/12/2023
 
 // Description templates are contained in the various control.* files at
 // https://salsa.debian.org/kernel-team/linux/-/tree/master/debian/templates
@@ -43,6 +43,7 @@ var translations = {
       "rt-amd64":    {"class": "PC a 64 bit, PREEMPT_RT", "longclass": "PC con processori AMD64, Intel 64 o VIA Nano"},
       "s390x":       {"class": "IBM zSeries"},
       "versatile":   {"class": "Versatile", "longclass": "sistemi Versatile (PB, AB, Qemu)"},
+      "mips64r2el":  {"class": "MIPS generici (mips64r2el)", "longclass": "piattaforma MIPS generica\n(mips64r2el)"},
     },
     "linux-kbuild": {
       "short": "infrastruttura kbuild per Linux @upstreamversion@",
