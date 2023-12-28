@@ -66,7 +66,7 @@ def add_separator(trailer, separator):
         pre = ' '
         post = ''
 
-    return pre + trailer + post
+    return pre + str(trailer) + post
 
 def opt_update(language):
     database = database_fmt.format(language)
@@ -105,7 +105,7 @@ def opt_update(language):
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_trailer_id_{0} ON packages_{0} (trailer_id)".format(language))
 
     cursor.execute("DELETE FROM title_{0} WHERE id NOT IN (SELECT title_id FROM packages_{0}) AND id NOT IN (SELECT trailer_id FROM packages_{0})".format(language))
-    cursor.execute("VACUUM")
+    # cursor.execute("VACUUM")
 
     cursor.execute("ANALYZE")
     cursor.close()
@@ -265,7 +265,7 @@ SELECT DISTINCT p0.name, ti.title_{1}, CASE WHEN p0.trailer_id IS NULL THEN '' E
  ON ti.title_id = p0.title_id
  LEFT JOIN trailers AS tr
  ON tr.trailer_id = p0.trailer_id
- WHERE p0.name LIKE ? AND (ti.title_{1} IS NOT NULL OR tr.trailer_{1} IS NOT NULL) AND p0.descmd5 NOT IN (SELECT descmd5 FROM packages_{1})
+ WHERE p0.name LIKE ? AND (ti.title_{1} IS NOT NULL OR tr.trailer_{1} IS NOT NULL)
  ORDER BY p0.name, ti.title_{1} COLLATE NOCASE, tr.trailer_{1} COLLATE NOCASE
 """.format(language1, language2), (package, ))
 
