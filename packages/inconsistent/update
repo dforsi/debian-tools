@@ -56,6 +56,6 @@ chmod a+r "$PUBLICDIR"/*.tsv.gz
 # update line count
 count=$(wc -l suggest-short-en-it.tsv)
 count=${count% *}
-tagline="$count suggerimenti aggiornati in data $(date +"%d/%m/%Y %H:%M")"
+tagline="$count suggerimenti aggiornati in data $(date +"%d/%m/%Y %H:%M" --reference suggest-short-en-it.tsv)"
 sed -e "s,<\!--tagline-->,$tagline," ../suggest-short.html >"$PUBLICDIR/index.html"
 chmod a+r "$PUBLICDIR/index.html"
