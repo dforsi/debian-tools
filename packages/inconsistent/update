@@ -1,0 +1,61 @@
+#!/bin/sh
+
+DIST=sid
+PROCESS_LANGUAGES="en it"
+BACKUPDIR=backup
+PUBLICDIR=/var/www/html/debian/packages/$DIST/suggest
+
+cd data/
+mkdir --parents "$BACKUPDIR"
+
+# download new data
+wget --no-verbose --timestamping $(
+ for LNG in $PROCESS_LANGUAGES; do
+  ARCHIVENAME="Translation-$LNG.bz2"
+  # backup old data
+  cp --update --archive "$ARCHIVENAME" "$BACKUPDIR"
+  # return URI to wget
+  echo http://ftp.debian.org/debian/dists/$DIST/main/i18n/$ARCHIVENAME
+ done
+)
+
+# import only updated data
+for LNG in $PROCESS_LANGUAGES; do
+ ARCHIVENAME="Translation-$LNG.bz2"
+ if [ "$ARCHIVENAME" -nt "$BACKUPDIR/$ARCHIVENAME" ]
+ then
+  echo "Processing language: $LNG"
+  cp --update --archive inconsistent-$LNG.sqlite3 "$BACKUPDIR"
+  bunzip2 --keep --force "$ARCHIVENAME" && ../inconsistent.py --update $LNG
+ else
+  echo "Ignoring language $LNG: file is old"
+ fi
+done
+
+# create output files
+../inconsistent.py --summary $PROCESS_LANGUAGES
+../inconsistent.py --compare $PROCESS_LANGUAGES
+../inconsistent.py --suggest-short it % > suggest-short-en-it.tsv
+cp --update --archive suggest-short-en-it.sqlite3 "$BACKUPDIR"
+../suggest-title2sqlite.py suggest-short-en-it.tsv suggest-short-en-it.sqlite3
+../remove-wrong-suggestions
+
+wc -l *tsv | head --lines=-1
+
+# TODO: copy only changed files
+
+# copy updated files
+cp --update --archive suggest-short-en-it.sqlite3 "$PUBLICDIR"
+chmod a+r "$PUBLICDIR/suggest-short-en-it.sqlite3"
+cp --update --archive *.tsv "$PUBLICDIR"
+for FILENAME in "$PUBLICDIR"/*.tsv; do
+  gzip $FILENAME
+done
+chmod a+r "$PUBLICDIR"/*.tsv.gz
+
+# update line count
+count=$(wc -l suggest-short-en-it.tsv)
+count=${count% *}
+tagline="$count suggerimenti aggiornati in data $(date +"%d/%m/%Y %H:%M")"
+sed -e "s,<\!--tagline-->,$tagline," ../suggest-short.html >"$PUBLICDIR/index.html"
+chmod a+r "$PUBLICDIR/index.html"

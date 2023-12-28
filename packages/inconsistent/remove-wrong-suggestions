@@ -1,0 +1,30 @@
+sqlite3 suggest-short-en-it.sqlite3 "\
+DELETE FROM titles_it WHERE \
+  title like '%compilatore C GNU%' OR \
+  title like '%meta-pacchetto%' OR \
+  title like 'famiglie di font%' OR \
+  title like 'file per lo %' OR \
+  title like '%documentaz. di sviluppo%' OR \
+  title like '%ennesima libreria JSON%' OR \
+  title like '% doc' OR \
+  title like '%lib condivisa%' OR \
+  title like '%librerie condivisa%' OR \
+  title like '%libreria condivise%' OR \
+  title like '%libr profilazione%' OR \
+  title like '%libreria di profilazione%' OR \
+  title like '%librerie profilazione%' OR \
+  title like '%pacch. di transizione%' OR \
+  title like '%pacch. fittizio transizione%' OR \
+  title like '%svilluppo%' OR \
+  title like '%codice sorgemte Rust' OR \
+  title like '%python3%'
+;
+
+PRAGMA case_sensitive_like=ON;
+DELETE FROM titles_it WHERE
+  title like '%codice sorgente rust%' OR
+  title like '%Libreria%' OR
+  title like 'Tex%' OR
+  title like '%Pypy'
+;
+"
