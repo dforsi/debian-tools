@@ -75,6 +75,8 @@ function merge_old_translation_text()
         var re = /The it-translation:<br>[\s\S]<pre>[\s\S]Description-..: ([\s\S]*?)[\s\S]<\/pre>/;
         var text = re.exec(response.responseText);
         if (text != null) {
+          // replace numeric entities
+          text[1] = text[1].replace(/&#(\d+);/g, function(match, dec) {return String.fromCharCode(dec);});
           // split and discard indent
           text = text[1].split("\n ");
           return replace_trans(text);
