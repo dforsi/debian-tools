@@ -77,6 +77,8 @@ function merge_old_translation_text()
         if (text != null) {
           // replace numeric entities
           text[1] = text[1].replace(/&#(\d+);/g, function(match, dec) {return String.fromCharCode(dec);});
+          // replace entities for double quotes
+          text[1] = text[1].replace(/&quot;/g, '"');
           // split and discard indent
           text = text[1].split("\n ");
           return replace_trans(text);
