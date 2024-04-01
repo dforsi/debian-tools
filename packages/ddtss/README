@@ -11,6 +11,8 @@ This directory contains:
    https://github.com/dforsi/debian-tools/raw/master/packages/ddtss/canned-strings.user.js
  * copy-older-translation.user.js - a Greasemonkey user script that adds some
    buttons to copy in the edit box the English text or the previous translation
+   To install this script so that it gets automatically updated go to:
+   https://github.com/dforsi/debian-tools/raw/master/packages/ddtss/copy-older-translation.user.js
  * ddtss-lite.user.js - a Greasemonkey user script that adds some
    functionalities to the DDTSS pages
    To install this script so that it gets automatically updated go to:
