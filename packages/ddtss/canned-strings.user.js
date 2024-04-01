@@ -38,7 +38,7 @@
       var title = element[0].nextSibling.textContent.match(/Description-[^:]+: (.*)/);
       var newtitle = title && title[1] == "<trans>" ? "0" : "1";
 
-      var parts = element[0].nextSibling.textContent.split(/Description-[^:]+: (.*)\n/)[2].split(/\n(?:#.*| \.)\n/)
+      var parts = element[0].nextSibling.nextSibling.textContent.split(/Description-[^:]+: (.*)\n/)[2].split(/\n(?:#.*| \.)\n/)
       parts.splice(-2);
       var paragraphs = newtitle;
       for (var i = 0; i < parts.length; i++) {
