@@ -91,7 +91,7 @@ function merge_english_text()
   var ul = document.getElementsByTagName('ul');
   var li = ul[2].getElementsByTagName('li');
   // The first line is the constant "Untranslated:" which acts as a dummy title
-  var text = li[0].innerText.trim().split("\n");
+  var text = li[0].innerText.trim().split("\n ");
   return replace_trans(text);
 }
 
