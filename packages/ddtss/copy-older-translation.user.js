@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name     Copy older translation
-// @version  1
+// @version  2
 // @grant    GM.xmlHttpRequest
+// @grant    GM_xmlhttpRequest
 // @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
 // Daniele Forsi
 // Last update 19/01/2019
@@ -60,7 +61,12 @@ function merge_old_translation_text()
   var old_translation_url = get_old_translation_url();
   if (old_translation_url) {
     console.log("GET", old_translation_url);
-    GM.xmlHttpRequest({
+    try {
+      request = GM.xmlHttpRequest; // GreaseMonkey
+    } catch {
+      request = GM_xmlhttpRequest; // ViolentMonkey
+    }
+    request({
       method: "GET",
       url: old_translation_url,
       onload: function (response) {
