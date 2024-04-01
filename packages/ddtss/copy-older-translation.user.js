@@ -3,7 +3,7 @@
 // @version  2
 // @grant    GM.xmlHttpRequest
 // @grant    GM_xmlhttpRequest
-// @match https://ddtp2.debian.net/ddtss/index.cgi/*/translate/*
+// @match https://ddtp.debian.org/ddtss/index.cgi/*/translate/*
 // Daniele Forsi
 // Last update 19/01/2019
 // Creative Commons Zero
