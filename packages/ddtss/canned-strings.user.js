@@ -35,7 +35,7 @@
     var element = document.getElementsByTagName('h3');
     if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling) {
       // "0" means needs translation
-      var title = element[0].nextSibling.textContent.match(/Description-[^:]+: (.*)/);
+      var title = element[0].nextSibling.nextSibling.textContent.match(/Description-[^:]+: (.*)/);
       var newtitle = title && title[1] == "<trans>" ? "0" : "1";
 
       var parts = element[0].nextSibling.nextSibling.textContent.split(/Description-[^:]+: (.*)\n/)[2].split(/\n(?:#.*| \.)\n/)
