@@ -5,7 +5,7 @@
 // @grant    GM_xmlhttpRequest
 // @match https://ddtp.debian.org/ddtss/index.cgi/*/translate/*
 // Daniele Forsi
-// Last update 19/01/2019
+// Last update 2024/04/01
 // Creative Commons Zero
 // ==/UserScript==
 
