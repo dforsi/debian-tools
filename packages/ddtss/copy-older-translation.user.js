@@ -30,10 +30,10 @@ function replace_trans(text)
     }
     console.log("new_parts", new_parts);
     if (changed) {
-    	textarea_el[0].value = new_parts.join("\n.\n");
-    }     
+      textarea_el[0].value = new_parts.join("\n.\n");
+    }
   }
-  
+
   return changed;
 }
 
@@ -50,9 +50,9 @@ function get_old_translation_url()
         //console.log(language);
         return url + language;
       }
-		}
+    }
   }
-  
+
   return false;
 }
 
@@ -77,12 +77,12 @@ function merge_old_translation_text()
         if (text != null) {
           // split and discard indent
           text = text[1].split("\n ");
-        	return replace_trans(text);
+          return replace_trans(text);
         }
       }
     });
   }
-  
+
   return false;
 }
 
