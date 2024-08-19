@@ -34,11 +34,12 @@
   try {
     var element = document.getElementsByTagName('h3');
     if (element[0] && element[0].innerHTML == 'Raw form:' && element[0].nextSibling) {
+      let raw_form = element[0].nextSibling.nextSibling.innerText;
+      let short_description = raw_form.match(/Description-[^:]+: .+/g)[1];
+      let title = short_description.match(/Description-[^:]+: (?<title>.+)/).groups['title']
       // "0" means needs translation
-      var title = element[0].nextSibling.nextSibling.textContent.match(/Description-[^:]+: (.*)/);
-      var newtitle = title && title[1] == "<trans>" ? "0" : "1";
-
-      var parts = element[0].nextSibling.nextSibling.textContent.split(/Description-[^:]+: (.*)\n/)[2].split(/\n(?:#.*| \.)\n/)
+      var newtitle = title == "<trans>" ? "0" : "1";
+      let parts = raw_form.split(/Description-[^:]+: .+\n/)[2].split(/\n(?:#.*| \.)\n/);
       parts.splice(-2);
       var paragraphs = newtitle;
       for (var i = 0; i < parts.length; i++) {
