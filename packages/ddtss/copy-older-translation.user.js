@@ -43,9 +43,9 @@ function get_old_translation_url()
   if (pre) {
     var lines = pre[pre.length - 1].textContent.split("\n");
     for (var i = 0; i < lines.length; i++) {
-      if (lines[i].startsWith('# Description-id: ')) {
-        var url = lines[i].replace(/# Description-id: (.*) (.*)/, "$2");
-        //console.log(url);
+      var match = lines[i].match(/# Description-id: [0-9]+ (.+)/);
+      if (match && match[1]) {
+        let url = match[1];
         var language = lines[i + 1].replace(/# patch (.*)(&language=.*)/, "$2");
         //console.log(language);
         return url + language;
