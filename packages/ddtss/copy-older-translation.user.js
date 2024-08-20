@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name     Copy older translation
-// @version  2
+// @version  3
 // @grant    GM.xmlHttpRequest
 // @grant    GM_xmlhttpRequest
 // @match https://ddtp.debian.org/ddtss/index.cgi/*/translate/*
 // Daniele Forsi
-// Last update 2024/04/01
+// Last update 2024/08/20
 // Creative Commons Zero
 // ==/UserScript==
 
